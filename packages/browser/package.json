@@ -1,0 +1,10 @@
+{
+  "name": "@starlock/browser",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/loader.ts",
+  "dependencies": {
+    "@starlock/core": "0.7.0"
+  }
+}

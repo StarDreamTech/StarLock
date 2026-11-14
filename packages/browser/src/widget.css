@@ -1,0 +1,129 @@
+:host{display:block;color-scheme:light;--sl-ink:#2b2135;--sl-muted:#8b7d94;--sl-purple:#8755b5;--sl-paper:#fbf8f3;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.sl-widget{box-sizing:border-box;width:100%;max-width:360px;padding:24px;background:var(--sl-paper);border:1px solid #e6dfea;border-radius:18px;color:var(--sl-ink);font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;box-shadow:0 14px 45px #3922440a}.sl-widget *{box-sizing:border-box}.sl-heading{display:flex;align-items:center;gap:10px;margin-bottom:24px}.sl-logo{display:block;flex:none;border-radius:8px}.sl-heading strong{display:block;font-size:14px;font-weight:600;letter-spacing:.04em}.sl-heading small{display:block;font:7px/1.5 ui-monospace,monospace;letter-spacing:.09em;color:#9f8ba9;margin-top:3px}.sl-provider{margin-left:auto;font-size:9px;color:#a08ca9}.sl-instruction{margin:0 0 15px;font-size:12px;color:#75627f;line-height:1.8}.sl-puzzle{position:relative;width:100%;overflow:hidden;border-radius:10px;background:#252136;isolation:isolate}.sl-scene{display:block;width:100%;height:100%;user-select:none}.sl-piece{position:absolute;object-fit:contain;filter:drop-shadow(0 2px 3px #0007);pointer-events:none;user-select:none;transform-origin:center}
+.sl-track{position:relative;height:44px;margin-top:18px;border-radius:11px;background:#eee6f3;box-shadow:inset 0 0 0 1px #dfd0e8}.sl-track-label{display:flex;align-items:center;justify-content:center;height:100%;font-size:11px;letter-spacing:.03em;color:#a086b0;user-select:none;padding-left:30px}.sl-thumb{position:absolute;top:0;box-sizing:border-box;width:44px;height:44px;border-radius:11px;border:0;background:linear-gradient(135deg,#b181cf,#8154a9);color:#fff;font:24px system-ui;box-shadow:0 4px 12px #6f428c25;cursor:grab;touch-action:none;user-select:none}.sl-thumb:focus-visible{outline:3px solid #c297e2;outline-offset:3px}.sl-dragging .sl-thumb{cursor:grabbing;background:#71429a}.sl-track-disabled{opacity:.6}.sl-thumb:disabled{cursor:default}.sl-slider-help{font-size:10px;color:#aa95b2;margin:11px 0 0;line-height:1.8}.sl-widget .sl-slider-refresh{font:11px/1.5 system-ui;padding:7px 10px;margin-top:12px;min-height:34px}
+.sl-image-frame{position:relative;display:flex;align-items:center;justify-content:center;min-height:88px;overflow:hidden;border-radius:9px;background:#f1ebf4}.sl-image-frame img{display:block;width:100%;height:auto}.sl-loading{font-size:11px;color:#9c85aa}.sl-overlay{position:absolute;inset:0;display:grid;place-items:center;background:#faf5f0e6;color:#987aaa;font-size:11px}.sl-label{display:block;font-size:11px;margin:20px 0 7px;color:#8b7297}.sl-input-row{display:flex;gap:8px}.sl-input-row input{min-width:0;width:100%;border:1px solid #dfd2e7;border-radius:9px;padding:11px 12px;background:#fffdf9;color:var(--sl-ink);font:inherit}.sl-input-row input:focus-visible,.sl-refresh:focus-visible,.sl-submit:focus-visible{outline:3px solid #c297e2;outline-offset:2px}.sl-refresh{flex:none;min-width:44px;border:1px solid #ded0e6;border-radius:9px;background:#f4edf6;color:#9672a9;font-size:21px;cursor:pointer}.sl-message{min-height:30px;padding-top:7px;color:#aa526c;font-size:11px}.sl-message:empty{min-height:0;padding:0}.sl-submit{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;margin-top:13px;padding:11px 15px;border:0;border-radius:9px;background:#8755b5;color:#fff;font:inherit;cursor:pointer}.sl-submit:disabled{background:#e9dfef;color:#a38cad;cursor:default}.sl-refresh:disabled{opacity:.5;cursor:default}.sl-footer{display:flex;align-items:center;justify-content:center;gap:6px;font-size:9px;letter-spacing:.06em;color:#b09abb;margin:22px 0 0}.sl-success{text-align:center;padding:25px 0}.sl-success strong{display:block;margin:15px 0 5px;font-weight:500}.sl-success p{font-size:11px;color:#a18aad;margin:0}.sl-check{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#ede3f2;color:#8755b5;font-size:24px}.sl-puzzle.sl-ring{border-radius:50%;max-width:256px;margin:0 auto 22px;background:transparent;border:1px solid #e6dce8;box-shadow:0 8px 25px #7652800c}.sl-ring .sl-piece{filter:none}.sl-rotation-widget .sl-heading{margin-bottom:21px}.sl-rotation-widget .sl-track{margin-top:16px}
+.sl-trigger{box-sizing:border-box;display:flex;align-items:center;gap:13px;width:100%;max-width:360px;min-height:78px;text-align:left;padding:17px 18px;border:1px solid #d7c7df;border-radius:13px;background:#fbf8f3;color:#3f2c4a;cursor:pointer;box-shadow:0 5px 18px #44264d07;font:13px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.sl-trigger img{flex:none}.sl-trigger-copy{display:flex;flex-direction:column;gap:4px;flex:1}.sl-trigger strong{font-size:12px;font-weight:550}.sl-trigger small{font:7px/1.4 ui-monospace,monospace;letter-spacing:.09em;color:#b39ac0}.sl-trigger-arrow{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#eee2f5;color:#9e6db5;font-size:16px}.sl-trigger:hover{border-color:#a176ba;background:#fffaf7}.sl-trigger:focus-visible{outline:3px solid #bf92d9;outline-offset:4px}.sl-trigger[data-passed=true] .sl-trigger-arrow{color:#745092;background:#e8dcef}
+/* Keep the challenge compact while leaving the page visible behind it. */
+.sl-dialog {
+  box-sizing: border-box;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  border: 1px solid #d9c9e1;
+  border-radius: 16px;
+  background: #fbf8f3;
+  color: #392444;
+  box-shadow: 0 14px 48px #160b2233;
+}
+.sl-dialog::backdrop {
+  background: #21152e33;
+}
+.sl-dialog .sl-widget {
+  max-width: none;
+  border: 0;
+  border-radius: 0;
+  padding: 16px;
+  box-shadow: none;
+  background: transparent;
+}
+.sl-heading {
+  min-height: 28px;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.sl-dialog .sl-heading {
+  padding-right: 32px;
+}
+.sl-heading strong {
+  letter-spacing: 0;
+}
+.sl-logo {
+  border-radius: 6px;
+}
+.sl-instruction {
+  margin-bottom: 8px;
+  line-height: 1.65;
+}
+.sl-track,
+.sl-rotation-widget .sl-track {
+  margin-top: 10px;
+}
+.sl-slider-help {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  color: #806487;
+}
+.sl-puzzle.sl-ring {
+  max-width: 200px;
+  margin-bottom: 0;
+}
+.sl-rotation-widget .sl-heading {
+  margin-bottom: 12px;
+}
+.sl-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  min-height: 32px;
+}
+.sl-widget .sl-slider-refresh {
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+}
+.sl-toolbar .sl-message {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+.sl-credits {
+  flex: none;
+  font-size: 10px;
+  color: #806487;
+}
+.sl-footer {
+  margin-top: 10px;
+  color: #806487;
+}
+.sl-track-label {
+  color: #765283;
+}
+.sl-dismiss {
+  position: absolute;
+  z-index: 2;
+  right: 9px;
+  top: 9px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #86618f;
+  font: 23px/1 system-ui;
+  cursor: pointer;
+}
+.sl-dismiss:hover {
+  background: #f0e6f4;
+  color: #78508f;
+}
+.sl-dismiss:focus-visible {
+  outline: 2px solid #bd92d7;
+  outline-offset: 1px;
+}
+.sl-dialog:focus-visible {
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
