@@ -1,6 +1,6 @@
 # 托管 SDK 与网站接入指南
 
-0.7.0 以托管脚本为主要入口，Vue 组件提供加载封装。普通网页和 Vue 页面共用同一份挑战界面；后端继续负责出题、校验、票据及服务端复核。此架构借鉴主流验证服务的接入形式，不表示安全能力与它们等同。
+0.7.0 以托管脚本为主要入口，Vue 与 React 组件提供加载封装。普通网页、Vue 和 React 页面共用同一份挑战界面；后端继续负责出题、校验、票据及服务端复核。此架构借鉴主流验证服务的接入形式，不表示安全能力与它们等同。
 
 官网默认选中圆环旋转；选择题型即创建会话并在弹窗打开，完成挑战后自动复核演示请求。首页主视觉不自动遮挡，直接进入 `#experience` 时打开默认题。这个自动复核只属于官网演示，外部接入的 SDK 仍返回 token，由自己的业务后端复核。
 
@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | 品牌首页 | 产品介绍、品牌素材、架构 | 本地可用 |
 | 在线体验 | 圆环旋转、直线/曲线滑块、数字、字符、算术验证及自动后端复核 | 本地可用，Vue 封装加载托管脚本 |
-| 开发接入 | 普通网页与 Vue 示例切换 | 本地可用 |
+| 开发接入 | 普通网页、Vue 与 React 示例切换 | 本地可用 |
 | 独立接入示例 | 无框架页面跨源加载脚本和挑战 | 本地可用 |
 | 独立文档页面 | 导航式 API 与部署文档 | 待实现，当前提供 Markdown |
 | 站点控制台 | 站点、域名、密钥和策略 | 待实现，当前通过 CLI 管理 |
@@ -51,7 +51,7 @@ npm run dev:hosted
 
 ```mermaid
 flowchart LR
-  H[接入网站 HTML 或 Vue] --> L[托管 api.js]
+  H[接入网站 HTML / Vue / React] --> L[托管 api.js]
   L --> W[Shadow DOM 挑战组件]
   W --> A[星锁挑战 API]
   H --> B[接入方业务后端]
@@ -62,6 +62,7 @@ flowchart LR
 - `packages/core`：无框架依赖的协议和客户端状态机，仍可用于自行开发界面。
 - `packages/browser`：共享加载器、普通网页挂载 API、挑战界面及其样式。构建后的经典脚本自带 Vue 运行时，接入网站无需安装 Vue。
 - `packages/vue`：调用加载器和托管 API，处理挂载、属性变化、销毁与事件；不再把挑战界面打包进宿主应用。
+- `packages/react`：React 18/19 客户端封装，处理 StrictMode、票据变化、卸载清理和最新回调。
 - `server/verification/cors.py`：仅对挑战接口开放按站点来源授权的 CORS；不扩大后端特权接口的权限。
 
 当前默认用顶层 dialog 展示挑战，内容与样式挂在 body 下的独立 Shadow DOM，容器只保留紧凑验证卡和隐藏 token，不随题面高度挤动表单。没有托管 iframe。远程脚本与宿主页面处于同一 JavaScript 权限范围，Shadow DOM 不是安全沙箱。反自动化判断和通过凭证仍必须由后端校验。
@@ -72,7 +73,7 @@ flowchart LR
 - `open()` / `close()` 打开或收起；用户关闭、Esc、遮罩点击和显式 close 会触发 `onClose()`，成功自动关闭不触发该通知。关闭不清除有效 token，会话继续计时；在途答案仍可能完成。完全取消前端请求并移除资源请调用 `destroy()`，它不撤销已签发的服务端凭证。
 - 弹窗的关闭按钮、遮罩、内部滚动和默认样式均由 SDK 提供。原生顶层 dialog 使背景控件不可交互，Tab 留在验证层，关闭后焦点回到触发控件。SDK 不写入业务页面 body 的 style。
 - 需要浏览器支持 `HTMLDialogElement.showModal()`；不支持时给出错误，接入方可显式选用 inline。完整浏览器检查目前基于 Chromium，其他浏览器与真实手机待验证。
-- Vue 提供 `display-mode`、`auto-open` 属性、`close` 事件，以及组件 ref 的 `open()`、`close()` 和 `refresh()`。
+- Vue 提供 `display-mode`、`auto-open` 属性和 `close` 事件，React 对应 `displayMode`、`autoOpen` 和 `onClose`。两种组件 ref 均提供 `open()`、`close()` 和 `refresh()`。
 
 ## 普通网页接入
 
@@ -131,17 +132,41 @@ const widget = window.StarLock.render('#captcha', {
 
 同页加载器合并相同 URL 的请求，失败会清理并允许重试，超时为 15 秒。一页只使用一个 SDK 脚本地址；需要访问多个 API 部署时复用这份运行时并分别配置 `apiBase`，不同时加载多个 SDK 版本。Vue 加载失败时会显示重新加载按钮。
 
-npm 包目前仍是私有工作区源码，尚未发布，也未生成可独立安装的 npm 分发包。外部项目当前可通过普通脚本接入，或在本仓库工作区中使用 Vue 示例。
+npm 包目前仍是私有工作区源码，尚未发布，也未生成可独立安装的 npm 分发包。外部项目当前可通过普通脚本接入，或在本仓库工作区中使用 Vue / React 示例。
+
+## React 接入
+
+工作区包 `@starlock/react` 支持 React 18.2+ 与 React 19。[ReactIntegration.tsx](examples/ReactIntegration.tsx) 参与类型检查，并显示在官网的 React 接入标签中。
+
+```tsx
+import { StarLock } from '@starlock/react'
+
+<StarLock
+  siteKey={session.site_key}
+  sessionTicket={session.session_ticket}
+  sdkUrl="https://verify.example.com/sdk/v1/api.js"
+  onSuccess={({ token }) => submitBusiness(token)}
+  onExpire={() => clearToken()}
+/>
+```
+
+示例域名需要替换为自己的托管地址，`session` 由业务后端创建。`onSuccess` 返回的 token 随业务请求交给后端复核。`onError(code)` 通知错误，`onClose()` 通知弹窗收起。
+
+组件在客户端 Effect 中加载共享 SDK，入口包含 `use client`。卸载和更换会话会销毁对应实例，异步脚本响应不会恢复旧实例。StrictMode 的额外挂载清理可以正常执行；更新回调函数不会重建当前题目。SSR 阶段输出加载占位，浏览器挂载后创建验证码。
+
+`displayMode`、`autoOpen`、`apiBase` 和 `nonce` 与普通脚本含义相同。React ref 可调用 `open()`、`close()`、`refresh()`，`className` 和 `style` 设置外层容器。加载失败时提供重新加载按钮。
+
+运行 `npm run dev:hosted` 后打开 [React 示例](http://127.0.0.1:5179/react.html)，可在 StrictMode 下体验圆环和数字题，并实际调用演示业务后端复核。该示例与普通网页示例共用 5179 端口的来源授权。
 
 ## 地址和版本
 
 | 配置 | 含义 | 默认行为 |
 | --- | --- | --- |
-| `sdkUrl` / Vue `sdk-url` | 托管脚本完整地址或同源路径 | Vue 使用 `(apiBase 或空串) + /sdk/v1/api.js` |
+| `sdkUrl` / Vue `sdk-url` | 托管脚本完整地址或同源路径 | Vue / React 使用 `(apiBase 或空串) + /sdk/v1/api.js` |
 | `apiBase` / Vue `api-base` | API 基地址，不带尾部 `/` 和 `/v1` | 托管组件从脚本地址推导 |
 | `displayMode` / Vue `display-mode` | `popup` 默认浮层；`inline` 显式嵌入 | 默认 `popup` |
 | `autoOpen` / Vue `auto-open` | 挂载后直接打开，适合用户操作触发 | 默认关闭 |
-| Vue `nonce` | 宿主 CSP 的 nonce | 加载脚本及组件样式沿用同一 nonce |
+| `nonce` / Vue `nonce` | 宿主 CSP 的 nonce | 加载脚本及组件样式沿用同一 nonce |
 
 例如脚本为 `https://verify.example.com/sdk/v1/api.js`，默认 API 为 `https://verify.example.com/v1/*`；脚本为 `/starlock/sdk/v1/api.js`，默认 API 保留 `/starlock` 前缀。域名均为示例，尚未配置。若把脚本放到独立静态 CDN，需显式指定 API 的 HTTPS 地址。
 

@@ -10,7 +10,7 @@
 
 产品方向参考 Google reCAPTCHA 与 hCaptcha：以风险判断决定是否需要交互，再按场景选择合适的挑战。项目独立实现，不承诺与第三方产品的协议或安全能力等价。
 
-> 当前版本：`0.7.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、数字、字符和算术六种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。点选、九宫格和无感风控仍属于后续阶段。尚未发布 npm、接入正式 CDN 或进行公网部署。
+> 当前版本：`0.7.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、数字、字符和算术六种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 与 React 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。点选、九宫格和无感风控仍属于后续阶段。尚未发布 npm、接入正式 CDN 或进行公网部署。
 
 ## 本地运行
 
@@ -33,7 +33,7 @@ npm run dev
 
 打开 [本地演示](http://127.0.0.1:5178/)，默认选中圆环旋转；点击题型或验证卡，即在弹窗中打开。首页主视觉不自动弹出，直接进入 `#experience` 时自动展开默认题。拖动或输入答案完成挑战后，官网会自动调用演示业务后端复核，显示完成状态。无需点击“开始验证”或另行提交。页面不会展示答案或站点密钥。这里的地址指运行 OpenBot 的这台电脑上的本地服务。
 
-`npm run dev` 会先构建托管脚本。另开终端运行 `npm run dev:hosted`，可访问 [独立网页接入示例](http://127.0.0.1:5179/)：页面从 `8018` 加载脚本并跨源请求挑战，接入页面本身不打包 Vue 或验证码界面。修改托管组件后需重新运行 `npm run build:sdk` 并刷新页面。
+`npm run dev` 会先构建托管脚本。另开终端运行 `npm run dev:hosted`，可访问 [独立网页接入示例](http://127.0.0.1:5179/)：页面从 `8018` 加载脚本并跨源请求挑战，接入页面本身不打包 Vue 或验证码界面。React 示例位于 [react.html](http://127.0.0.1:5179/react.html)，同样使用真实后端完成会话和凭证复核。修改托管组件后需重新运行 `npm run build:sdk` 并刷新页面。
 
 Redis 默认仅监听 `127.0.0.1:6391`；服务端默认使用该地址的 DB 0。测试用随机命名空间，不清空已有 Redis 数据。停止 Redis 可执行 `docker compose stop redis`，前后端进程可分别用 `Ctrl+C` 停止。
 
@@ -54,10 +54,10 @@ npm run build
 
 项目网站包含产品介绍、在线体验、开发文档，后续再加入站点控制台。现有 `examples/playground` 是官网的本地第一版，已经包含品牌首页、真实验证体验和开发接入区；它可以构建为静态文件，在线体验仍需要后端服务。正式域名、独立文档路由和控制台尚未上线。
 
-推荐以 **托管脚本 + 独立验证 API** 交付，Vue 包负责加载、挂载和回调。挑战界面统一在我们的托管脚本中更新，接入方页面不需要打包验证界面。API 不在每次验证时生成 JavaScript。
+推荐以 **托管脚本 + 独立验证 API** 交付，Vue 与 React 包负责加载、挂载和回调。挑战界面统一在我们的托管脚本中更新，接入方页面不需要打包验证界面。API 不在每次验证时生成 JavaScript。
 
 - 普通网页加载 `/sdk/v1/api.js` 后调用 `window.StarLock.render(container, options)`。脚本包含 Vue 运行时，宿主无需安装 Vue；使用 Shadow DOM 隔离样式。
-- Vue 3 使用 `@starlock/vue`，可配置 `sdkUrl`；该封装复用同一份远程脚本。npm 包仍为私有工作区源码，尚不能直接从 npm 安装。
+- Vue 3 使用 `@starlock/vue`，React 18/19 使用 `@starlock/react`，两者均可配置 `sdkUrl` 并复用同一份远程脚本。npm 包仍为私有工作区源码，尚不能直接从 npm 安装。
 - 托管组件默认以弹窗展示，页面只放一张紧凑验证卡，挑战挂在 body 下的独立 Shadow DOM 和顶层 dialog 中，不挤动业务表单。`displayMode: 'inline'` 可保留旧版嵌入方式。
 - 托管组件的 `apiBase` 默认来自脚本地址；脚本与 API 分别部署时显式覆盖。`apiBase: ''` 则使用宿主同源 `/v1/*`，`'/starlock'` 可配合去除前缀的同源网关。
 - 跨源挑战请求按启用站点的精确 Origin 授权；预检只允许 POST 和 Content-Type，不携带 cookie，也不开放后端认证接口。正式外部地址使用 HTTPS，内部 `8018` 端口由网关转发。
@@ -180,7 +180,7 @@ sequenceDiagram
 | 层次 | 建议方案 | 职责 |
 | --- | --- | --- |
 | 浏览器 SDK | TypeScript + 独立样式作用域 | 初始化、挑战渲染、输入采集、回调、销毁与重新验证 |
-| 框架组件 | 首先提供 Vue 3 封装 | 适配现有项目；核心协议和状态机不绑定 Vue |
+| 框架组件 | Vue 3 与 React 18/19 封装 | 共用托管 SDK，处理框架生命周期 |
 | 验证 API | FastAPI + Pydantic + Uvicorn | 会话、出题、校验、凭证、请求校验与开发 API 文档 |
 | 图像生成 | Pillow | 字符图、拼图资产及题面组合 |
 | 短期状态 | Redis | 会话、挑战、凭证、尝试计数、限流及原子消费 |
@@ -199,6 +199,7 @@ server/verification/    生成器、站点、挑战与凭证服务、API、受�
 packages/core/          无框架依赖的 TypeScript 客户端与生命周期测试
 packages/browser/       托管组件、Shadow DOM 挂载、远程脚本加载器与 IIFE 构建
 packages/vue/           托管 SDK 的 Vue 3 加载封装
+packages/react/         托管 SDK 的 React 18/19 加载封装
 examples/playground/    星梦品牌演示页与 Vite 同源代理
 examples/hosted/        无框架的独立网页跨源接入示例
 assets/brand/           三张生成插画与原有星梦 SVG 标识
@@ -273,9 +274,9 @@ docs/                   模块边界、接入、品牌提示词与验证记录
 ### 当前 SDK
 
 - 托管入口：`window.StarLock.render(container, { siteKey, sessionTicket, apiBase?, onSuccess?, onExpire?, onError? })`，返回 `getResponse()`、`open()`、`close()`、`refresh()`、`reset(sessionTicket?)`、`destroy()`。同一容器只能挂载一次，销毁后可重新挂载。
-- Vue 配置：`siteKey`、`sessionTicket`、可选 `sdkUrl`、`apiBase`、CSP `nonce`、`displayMode` 和 `autoOpen`。同页共享一次脚本加载，加载失败可重新加载；语言配置尚未实现。
+- Vue / React 配置：`siteKey`、`sessionTicket`、可选 `sdkUrl`、`apiBase`、CSP `nonce`、`displayMode` 和 `autoOpen`。同页共享一次脚本加载，加载失败可重新加载；语言配置尚未实现。
 - TypeScript 核心：`StarLockClient.initialize()`、`refresh()`、`verify(answer)`、`reset(sessionTicket?)`、`subscribe(listener)`、`destroy()`；当前核心负责状态与请求，渲染由 Vue 组件承担。
-- 核心回调：`onSuccess({ token, expiresIn })`、`onExpire()`；错误通过订阅状态中的 `errorCode`、`message` 读取。Vue 组件发出 `success`、`expire` 和 `error` 事件。
+- 核心回调：`onSuccess({ token, expiresIn })`、`onExpire()`；错误通过订阅状态中的 `errorCode`、`message` 读取。Vue 组件发出对应事件，React 使用 `onSuccess`、`onExpire`、`onError` 和 `onClose` 属性，ref 提供 `open()`、`close()`、`refresh()`。
 - 组件状态：`idle → loading → ready → verifying → success`；另处理 `error`、`expired` 与 `destroyed`，重复操作不产生多次业务提交。
 - `reset(sessionTicket?)`：传新票据时重新初始化；不传时刷新活跃会话的题目。会话已通过或过期时，接入方后端必须创建新会话。`destroy()` 取消请求并清理订阅与计时器。服务端关闭会话的管理接口尚未实现，销毁组件不会撤销已经签发的凭证。
 
@@ -327,7 +328,7 @@ env STARLOCK_DEBUG=1 .venv/bin/python server/cli.py set-site-types site_example 
 
 交界只在约 10 像素宽的局部带状区域做轻度模糊，内圈边缘羽化，外圈留 3 像素重叠避免白缝；没有把整图模糊。当前强度为本地体验基线，尚未做真人完成率或识别难度的标定。
 
-新站点默认包含 `rotate`；旧站点需用上面的完整题型清单显式开启。本地演示站点已开启。官网默认展示该题，普通网页和 Vue 组件均自动识别题面，无须额外前端属性。
+新站点默认包含 `rotate`；旧站点需用上面的完整题型清单显式开启。本地演示站点已开启。官网默认展示该题，普通网页、Vue 和 React 组件均自动识别题面，无须额外前端属性。
 
 ## 8. 点选、九宫格与复杂交互
 

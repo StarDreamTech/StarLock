@@ -119,3 +119,7 @@ const emit = defineEmits<{ verified: [token: string] }>()
 直线和贝塞尔滑块已实现，协议、坐标和旧站点开启命令见 [README 第 7 节](../README.md#7-直线与贝塞尔滑块已实现)。下一步是顺序点选，再实现静态九宫格；无感与行为评分随后开发。当前滑块验证位置与角度，不声称能够通过轨迹判断用户身份。
 
 实现参考：[FastAPI 并发与线程池](https://fastapi.tiangolo.com/async/)、[FastAPI 测试](https://fastapi.tiangolo.com/tutorial/testing/)、[Redis 原子脚本与事务语义](https://redis.io/docs/latest/develop/programmability/)、[Vue TypeScript 支持](https://vuejs.org/guide/typescript/overview)。
+
+## React 组件
+
+`packages/react` 通过现有加载器复用托管 SDK，支持 React 18.2+ 与 React 19。组件在 Effect 中挂载，清理时销毁实例并屏蔽旧会话回调；StrictMode、加载重试、回调更新和服务端渲染有独立回归检查。可运行示例为 `examples/hosted/react.html`，详细使用方法见 [React 接入](integration.md#react-接入)。
