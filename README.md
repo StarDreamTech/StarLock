@@ -1,3 +1,9 @@
+<p align="center">
+  <a href=".github/assets/starlock.svg">
+    <img src=".github/assets/starlock.svg" width="128" height="128" alt="星锁 StarLock Logo" />
+  </a>
+</p>
+
 # 星锁 StarLock
 
 星梦科技的开源人机验证平台。
