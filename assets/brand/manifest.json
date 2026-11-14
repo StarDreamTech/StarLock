@@ -1,0 +1,37 @@
+[
+  {
+    "file": "starlock-hero.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1615961,
+    "sha256": "b77fb2f05d5cf2f46e9ce7c5b9297e0b5f7f5c5301065e0e31963b4cd57e534a"
+  },
+  {
+    "file": "starlock-orbit.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 1571897,
+    "sha256": "3a058ea6b1fd6b64f9dcccfe374d59aa905c0596f78670f2cf3c9e74868ccbef"
+  },
+  {
+    "file": "starlock-success.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1761622,
+    "sha256": "816544ffd2cac00b3321caad87d175f8531be6b5682a4b54d5ae2c52f07238f1"
+  },
+  {
+    "file": "starlock.svg",
+    "bytes": 1130,
+    "sha256": "c52c1fb9c30aa8e6fc3f3452419473754b8e9cfb53a82429b1ca19c8168762cb",
+    "source": "user-provided StarDreamTech-project-logos.zip/starlock.svg"
+  },
+  {
+    "file": "starlock.png",
+    "bytes": 61973,
+    "sha256": "2b7e84275eaf53640d90cbb24c732d110ec9cbfec33626c30ccb1dd74856b231",
+    "source": "user-provided StarDreamTech-project-logos.zip/starlock.png",
+    "width": 256,
+    "height": 256
+  }
+]

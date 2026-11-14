@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f4f0e9" />
+  <title>星锁 · 悬浮验证接入示例</title><link rel="icon" type="image/svg+xml" href="/brand/starlock.svg" />
+  <link rel="stylesheet" href="/style.css" />
+  <script id="starlock-sdk" src="http://127.0.0.1:8018/sdk/v1/api.js?v=0.7.0-compact.1" defer></script>
+  <script type="module" src="/main.js"></script>
+</head>
+<body>
+  <div class="site-shell integration-page">
+    <header class="site-header"><a class="brand" href="http://127.0.0.1:5178/"><img src="/brand/starlock.svg" alt="星锁项目 Logo" width="38" height="38" /><strong>StarLock<span>星锁 · 星梦科技</span></strong></a><a class="back-link" href="http://127.0.0.1:5178/#integration">返回接入文档 ↗</a></header>
+    <main class="hosted-layout">
+      <section class="hosted-copy"><p class="eyebrow">STARLOCK / FLOATING VERIFICATION</p><h1>验证浮起来。<br /><em>页面静下来。</em></h1><p class="hosted-description">选择一种挑战，在独立弹窗里完成验证。<br />你的页面，保持自己的节奏。</p>
+        <div class="method-grid" aria-label="验证题型">
+          <button type="button" data-kind="rotate" aria-pressed="true"><span>01</span><strong>圆环旋转</strong><small>内外之间，找回完整。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="bezier_slider" aria-pressed="false"><span>02</span><strong>曲线拼图</strong><small>沿着曲线，唤醒直觉。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="slider" aria-pressed="false"><span>03</span><strong>旋转滑块</strong><small>直线运动，角度变换。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="digits" aria-pressed="false"><span>04</span><strong>数字验证</strong><small>熟悉而轻巧。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="text" aria-pressed="false"><span>05</span><strong>字符验证</strong><small>辨认清晰的答案。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="arithmetic" aria-pressed="false"><span>06</span><strong>算术验证</strong><small>一次简单的思考。</small><i aria-hidden="true">↗</i></button>
+        </div>
+      </section>
+      <section class="hosted-demo" aria-label="业务页面接入演示"><div class="demo-sheet-heading"><span>YOUR WEBSITE</span><span>01 / LIVE SAMPLE</span></div><div class="demo-star" aria-hidden="true">✧</div><h2>一份轻巧的信任。</h2><p>当前体验 <strong id="current-kind">圆环旋转</strong></p>
+        <form id="business-form"><div id="captcha" aria-live="polite"></div><button type="submit" id="submit" disabled>提交演示请求 <span>↗</span></button></form>
+        <p id="status" role="status" aria-live="polite">正在准备验证卡…</p><button type="button" id="retry" hidden>重新准备验证 ↗</button>
+        <div class="example-origin"><span>REMOTE SDK + API</span><code>127.0.0.1:8018</code></div>
+      </section>
+    </main>
+    <footer class="site-footer"><span><img src="/brand/starlock.svg" alt="" width="26" height="26" />StarLock · 星锁</span><p>本地接入示例 · 站点密钥保留在后端</p><span class="footer-meta">MADE FOR HUMAN MOMENTS.</span></footer>
+  </div>
+</body>
+</html>
