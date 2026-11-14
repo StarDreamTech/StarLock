@@ -6,11 +6,13 @@
 
 # 星锁 · StarLock
 
-面向网站与 Web 应用的人机验证服务，提供可嵌入的前端组件、服务端验证接口和站点管理能力。覆盖传统字符验证码、滑块、点选、九宫格及无感验证，让接入方通过同一套接口保护注册、登录、发送验证码、评论和敏感操作。
+面向网站与 Web 应用的人机验证服务，提供托管前端组件、服务端验证接口和站点配置。当前支持数字、字符、算术、直线拼图、曲线拼图与圆环旋转六种题型，可用于注册、登录、发送验证码、评论和敏感操作。
 
 产品方向参考 Google reCAPTCHA 与 hCaptcha：以风险判断决定是否需要交互，再按场景选择合适的挑战。项目独立实现，不承诺与第三方产品的协议或安全能力等价。
 
 > 当前版本：`0.7.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、数字、字符和算术六种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 与 React 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。点选、九宫格和无感风控仍属于后续阶段。尚未发布 npm、接入正式 CDN 或进行公网部署。
+
+[项目介绍](https://stardreamtech.github.io/projects/starlock/) · [接入指南](docs/integration.md) · [Vue 示例](docs/examples/VueIntegration.vue) · [React 示例](docs/examples/ReactIntegration.tsx) · [验证记录](docs/verification.md)
 
 ## 本地运行
 
@@ -31,7 +33,7 @@ env STARLOCK_DEBUG=1 STARLOCK_DEMO=1 .venv/bin/uvicorn --app-dir server main:cre
 npm run dev
 ```
 
-打开 [本地演示](http://127.0.0.1:5178/)，默认选中圆环旋转；点击题型或验证卡，即在弹窗中打开。首页主视觉不自动弹出，直接进入 `#experience` 时自动展开默认题。拖动或输入答案完成挑战后，官网会自动调用演示业务后端复核，显示完成状态。无需点击“开始验证”或另行提交。页面不会展示答案或站点密钥。这里的地址指运行 OpenBot 的这台电脑上的本地服务。
+打开 [本地演示](http://127.0.0.1:5178/)，默认选中圆环旋转；点击题型或验证卡，即在弹窗中打开。首页主视觉不自动弹出，直接进入 `#experience` 时自动展开默认题。拖动或输入答案完成挑战后，官网会自动调用演示业务后端复核，显示完成状态。无需点击“开始验证”或另行提交。页面不会展示答案或站点密钥。上述本地地址指启动项目服务的电脑。
 
 `npm run dev` 会先构建托管脚本。另开终端运行 `npm run dev:hosted`，可访问 [独立网页接入示例](http://127.0.0.1:5179/)：页面从 `8018` 加载脚本并跨源请求挑战，接入页面本身不打包 Vue 或验证码界面。React 示例位于 [react.html](http://127.0.0.1:5179/react.html)，同样使用真实后端完成会话和凭证复核。修改托管组件后需重新运行 `npm run build:sdk` 并刷新页面。
 
@@ -64,6 +66,26 @@ npm run build
 - `site_key` 可以公开；`site_secret` 只存在接入方后端。前端拿到 token 后仍须由自己的后端调用 `/v1/siteverify`。
 
 [官网规划与完整接入指南](docs/integration.md) 包含组件示例、地址约定、部署边界和后续交付顺序。
+
+### React 快速接入
+
+仓库中的 `@starlock/react` 支持 React 18.2+ 与 React 19。取得业务后端创建的 `session` 后挂载组件，`submitBusiness` 代表自己的业务提交函数。下面的示例域名需要替换为实际托管地址。
+
+```tsx
+import { StarLock } from '@starlock/react'
+
+<StarLock
+  siteKey={session.site_key}
+  sessionTicket={session.session_ticket}
+  sdkUrl="https://verify.example.com/sdk/v1/api.js"
+  displayMode="popup"
+  onSuccess={({ token }) => submitBusiness(token)}
+/>
+```
+
+组件支持 `onSuccess`、`onExpire`、`onError` 和 `onClose`，ref 提供 `open()`、`close()`、`refresh()`。更换票据或卸载组件会清理旧实例，更新回调函数保留当前挑战；StrictMode 和 SSR 加载占位已有检查。
+
+当前 React 与 Vue 包均为工作区源码。运行 `npm run dev:hosted` 后，可打开 [React 接入示例](http://127.0.0.1:5179/react.html) 完成真实的挑战与后端复核。[完整 React 示例与配置](docs/integration.md#react-接入) 说明了客户端边界、加载重试和回调处理。
 
 ### 当前品牌素材
 
