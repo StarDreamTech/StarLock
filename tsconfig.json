@@ -24,14 +24,21 @@
       ],
       "@starlock/browser": [
         "packages/browser/src/loader.ts"
+      ],
+      "@starlock/react": [
+        "packages/react/src/index.ts"
       ]
-    }
+    },
+    "jsx": "react-jsx"
   },
   "include": [
     "packages/**/*.ts",
     "packages/**/*.vue",
     "examples/**/*.ts",
     "examples/**/*.vue",
-    "docs/examples/**/*.vue"
+    "docs/examples/**/*.vue",
+    "packages/**/*.tsx",
+    "examples/**/*.tsx",
+    "docs/examples/**/*.tsx"
   ]
 }

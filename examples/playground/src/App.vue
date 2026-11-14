@@ -5,7 +5,13 @@ import BrandOrbit from './BrandOrbit.vue'
 import type { ChallengeType, VerificationResult } from '@starlock/core'
 import integrationExample from '../../../docs/examples/VueIntegration.vue?raw'
 import hostedExample from '../../../docs/examples/HostedIntegration.html?raw'
-const integrationMode = ref<'html' | 'vue'>('html')
+import reactExample from '../../../docs/examples/ReactIntegration.tsx?raw'
+const integrationMode = ref<'html' | 'vue' | 'react'>('html')
+const integrations = {
+  html: { label: '普通网页', code: hostedExample },
+  vue: { label: 'Vue 3', code: integrationExample },
+  react: { label: 'React', code: reactExample },
+}
 
 const kinds: { type: ChallengeType; name: string; description: string; hint: string; icon: string }[] = [
   { type: 'rotate', name: '圆环旋转', description: '旋转内圈，找回画面原本的模样。', hint: '拖动旋转内圈，留意模糊交界两侧的图案。', icon: 'M20 12a8 8 0 1 1-3-6m3-3v5h-5M8 12a4 4 0 1 0 4-4' },
@@ -151,28 +157,37 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
       <section id="architecture" class="architecture section-wrap"><div class="section-kicker"><span>02 — BUILT IN LAYERS</span><span>清晰的模块，渐进的能力。</span></div>
         <div class="architecture-heading"><h2>每一层，各司其职。</h2><p>沿同一套协议，逐步延伸验证的边界。</p></div>
         <div class="module-grid">
-          <article><span class="module-number">01 / INTERFACE</span><h3>托管组件</h3><p>远程脚本提供验证界面，Vue 封装复用同一份 SDK。</p><span class="module-status available">脚本与 Vue 接入已实现</span></article>
+          <article><span class="module-number">01 / INTERFACE</span><h3>托管组件</h3><p>远程脚本提供验证界面，Vue / React 封装复用同一份 SDK。</p><span class="module-status available">脚本、Vue 与 React 接入已实现</span></article>
           <article><span class="module-number">02 / VERIFICATION</span><h3>验证服务</h3><p>服务端保管答案，绑定业务上下文，原子消费一次性凭证。</p><span class="module-status available">第一阶段已实现</span></article>
           <article><span class="module-number">03 / ADAPTIVE</span><h3>按风险升级</h3><p>从滑块、点选到九宫格，逐步构建低打扰的验证策略。</p><span class="module-status">后续阶段规划</span></article>
         </div>
       </section>
 
       <section id="integration" class="integration section-wrap" aria-labelledby="integration-title">
-        <div class="section-kicker"><span>03 — MADE TO CONNECT</span><span class="tiny-pill">Hosted SDK · Vue 3</span></div>
-        <div class="integration-heading"><h2 id="integration-title">把星锁，接进你的产品。</h2><p>引入托管脚本，连接验证服务。Vue 项目也复用同一份组件。</p></div>
+        <div class="section-kicker"><span>03 — MADE TO CONNECT</span><span class="tiny-pill">Hosted SDK · Vue 3 · React</span></div>
+        <div class="integration-heading"><h2 id="integration-title">把星锁，接进你的产品。</h2><p>普通网页、Vue 和 React 项目共用托管 SDK，连接同一套验证服务。</p></div>
         <ol class="integration-steps">
           <li><span>01</span><h3>后端创建会话</h3><p>用站点密钥绑定本次业务，向浏览器返回短期票据。</p></li>
           <li><span>02</span><h3>前端挂载组件</h3><p>传入站点标识、票据和 API 地址，展示并完成验证。</p></li>
           <li><span>03</span><h3>后端复核凭证</h3><p>将 token 随业务请求提交，后端复核通过后执行业务。</p></li>
         </ol>
         <div class="integration-layout">
-          <div class="integration-code"><div class="code-heading"><div class="code-switch" role="group" aria-label="选择接入方式"><button :aria-pressed="integrationMode === 'html'" @click="integrationMode = 'html'">普通网页</button><button :aria-pressed="integrationMode === 'vue'" @click="integrationMode = 'vue'">Vue 3</button></div><span>本地接入示例</span></div><pre tabindex="0" :aria-label="integrationMode === 'html' ? '托管脚本接入代码' : 'Vue 3 接入代码'"><code>{{ integrationMode === 'html' ? hostedExample : integrationExample }}</code></pre></div>
+          <div class="integration-code">
+            <div class="code-heading">
+              <div class="code-switch" role="group" aria-label="选择接入方式">
+                <button v-for="(item, key) in integrations" :key="key" :aria-pressed="integrationMode === key" @click="integrationMode = key">{{ item.label }}</button>
+              </div>
+              <span>本地接入示例</span>
+            </div>
+            <pre tabindex="0" :aria-label="integrations[integrationMode].label + ' 接入代码'"><code>{{ integrations[integrationMode].code }}</code></pre>
+          </div>
           <aside class="integration-notes" aria-label="接入配置说明">
             <h3>一个地址，连接验证服务。</h3>
             <dl><dt>托管脚本 · 当前可用</dt><dd><code>/sdk/v1/api.js</code><p>默认调用脚本所在服务的验证 API，普通网页无需安装框架。</p></dd>
-              <dt>Vue 封装</dt><dd><code>sdk-url="…/sdk/v1/api.js"</code><p>自动加载并复用脚本，处理组件挂载、销毁和回调。</p></dd>
+              <dt>Vue / React 封装</dt><dd><code>sdkUrl / sdk-url</code><p>自动加载并复用脚本，处理组件挂载、销毁和回调。</p></dd>
               <dt>跨源 API · 已实现</dt><dd><p>登记接入网站来源后，挑战接口支持跨源请求。站点密钥继续保存在后端。</p></dd></dl>
             <a class="hosted-demo-link" href="http://127.0.0.1:5179/">打开独立网站接入示例 ↗</a>
+            <a class="hosted-demo-link" href="http://127.0.0.1:5179/react.html">打开 React 接入示例 ↗</a>
             <p class="integration-status">示例中的 /demo 接口仅用于本地联调。npm 包、正式域名、CDN 部署与站点控制台尚未发布。</p>
             <p class="integration-secret">站点密钥只放在你的后端；前端成功回调返回待复核凭证。</p>
           </aside>
