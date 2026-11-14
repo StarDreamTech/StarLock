@@ -1,0 +1,15 @@
+.venv/
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-*
+.env
+.local/
+.runtime/
+.DS_Store
+coverage/
+deliverables/
+
+browser-screenshots/

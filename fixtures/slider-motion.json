@@ -1,0 +1,35 @@
+[
+  {
+    "name": "legacy linear motion",
+    "progress": 0.5,
+    "payload": {"path": {"kind": "linear", "control_points": [{"x": 8, "y": 50}, {"x": 248, "y": 50}]}},
+    "expected": {"x": 128, "y": 50, "angle": 0}
+  },
+  {
+    "name": "straight path with CSS ease at parametric midpoint",
+    "progress": 0.3125,
+    "payload": {
+      "path": {"kind": "linear", "control_points": [{"x": 8, "y": 50}, {"x": 248, "y": 50}]},
+      "motion": {"easing": {"kind": "cubic_bezier", "control_points": [{"x": 0.25, "y": 0.1}, {"x": 0.25, "y": 1}]}, "rotation": {"start_degrees": -80, "end_degrees": 60}}
+    },
+    "expected": {"x": 137, "y": 50, "angle": -4.75}
+  },
+  {
+    "name": "CSS ease-in at parametric midpoint",
+    "progress": 0.6575,
+    "payload": {
+      "path": {"kind": "linear", "control_points": [{"x": 8, "y": 50}, {"x": 248, "y": 50}]},
+      "motion": {"easing": {"kind": "cubic_bezier", "control_points": [{"x": 0.42, "y": 0}, {"x": 1, "y": 1}]}, "rotation": {"start_degrees": 65, "end_degrees": -85}}
+    },
+    "expected": {"x": 128, "y": 50, "angle": -10}
+  },
+  {
+    "name": "curved path and easing remain independent",
+    "progress": 0.5,
+    "payload": {
+      "path": {"kind": "cubic_bezier", "control_points": [{"x": 8, "y": 90}, {"x": 80, "y": 10}, {"x": 180, "y": 106}, {"x": 248, "y": 40}]},
+      "motion": {"easing": {"kind": "cubic_bezier", "control_points": [{"x": 0.42, "y": 0}, {"x": 0.58, "y": 1}]}, "rotation": {"start_degrees": 65, "end_degrees": -85}}
+    },
+    "expected": {"x": 129.5, "y": 59.75, "angle": -10}
+  }
+]

@@ -1,0 +1,7 @@
+name: starlock-local
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6391:6379"
+    command: ["redis-server", "--appendonly", "no", "--save", ""]
