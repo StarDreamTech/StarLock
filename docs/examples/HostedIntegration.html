@@ -1,0 +1,30 @@
+<!-- 本地演示；正式项目替换成自己的会话接口和托管域名。 -->
+<div id="captcha"></div>
+<p id="result" role="status"></p>
+<script src="http://127.0.0.1:8018/sdk/v1/api.js" defer></script>
+<script>
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/demo/session', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ challenge_type: 'rotate' })
+    });
+    const session = await response.json();
+    if (!response.ok) throw new Error(session.message);
+    window.StarLock.render('#captcha', {
+      siteKey: session.site_key,
+      sessionTicket: session.session_ticket,
+      displayMode: 'popup', // 默认使用弹窗，不挤动业务表单。
+      onSuccess({ token }) {
+        // 将 token 随业务请求交给自己的后端复核。
+        document.querySelector('#result').textContent = '已取得待复核凭证';
+      },
+      onExpire() {
+        document.querySelector('#result').textContent = '已过期，请创建新会话';
+      }
+    });
+  } catch (error) {
+    document.querySelector('#result').textContent = error.message;
+  }
+});
+</script>
