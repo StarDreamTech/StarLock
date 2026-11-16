@@ -21,14 +21,15 @@ function Demo() {
     return data
   }
 
-  async function prepare(kind: 'rotate' | 'digits') {
+  async function prepare(kind: 'rotate' | 'digits', source: 'preset' | 'procedural' = 'preset') {
     if (busy) return
     const request = ++current.current
     setBusy(true)
     setSession(undefined)
     setMessage('正在创建会话…')
     try {
-      const result = await post('/demo/session', { challenge_type: kind })
+      const result = await post('/demo/session', { challenge_type: kind,
+        ...(kind === 'rotate' ? { rotation_source: source } : {}) })
       if (request === current.current) {
         setSession(result)
         setMessage('请完成弹窗中的验证。')
@@ -67,7 +68,8 @@ function Demo() {
         <h1>React 验证接入</h1>
         <p>同一份托管 SDK，支持弹窗、刷新与服务端复核。</p>
         <div className="react-demo-actions">
-          <button className="primary-link" disabled={busy} onClick={() => void prepare('rotate')}>圆环旋转</button>
+          <button className="primary-link" disabled={busy} onClick={() => void prepare('rotate')}>星梦预设 · 圆环旋转</button>
+          <button className="primary-link" disabled={busy} onClick={() => void prepare('rotate', 'procedural')}>随机几何 · 圆环旋转</button>
           <button className="primary-link" disabled={busy} onClick={() => void prepare('digits')}>数字验证</button>
         </div>
         {session && <StarLock

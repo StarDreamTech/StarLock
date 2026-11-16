@@ -8,13 +8,15 @@
 | --- | --- | --- |
 | `server/verification/generators.py` | 字符、纯数字、算术题的图片、题面及内部答案 | 新题型在生成器与校验器分别实现；公开参数与答案分开 |
 | `server/verification/sliders.py` | 四种图形、多缺口、路径/缓动/旋转、原图位置与角度校验 | 目标与容差只存在服务端，不能使用客户端判定 |
-| `server/verification/rotations.py` | 随机双层圆环图案、反向旋入目标角、局部模糊/羽化、服务端角度判定 | 目标只存在服务端；界面仅提交手柄进度 |
+| `server/verification/rotations.py` | 品牌预设/随机几何双来源、整图随机方向、双层圆环、局部模糊/羽化、服务端角度判定 | 来源在业务会话绑定；目标只存在服务端，界面仅提交手柄进度 |
+| `server/verification/image_sets.py` | 系统/自定义图片集、规范化上传、并发去重、启停与默认池保护 | 与站点共用 SQLite，后端会话绑定图库 |
+| `server/verification/admin.py`、`server/assets/admin/` | 图集管理界面、独立管理认证、同源检查与私有预览 | 不复用站点密钥，不开放管理跨域 |
 | `server/verification/service.py` | 会话、HMAC 答案、刷新、失败次数、凭证、限流 | 保持业务绑定和原子状态变更，题型不能绕开生命周期 |
 | `server/verification/models.py` | 独立 Site 数据类与 sqlite3 存储；保留旧表与 PBKDF2 凭证 | 后续按部署需要引入数据库适配，不依赖 Web 框架 |
 | `server/verification/api.py` | FastAPI 路由、Pydantic 请求校验、后端认证、请求大小检查、固定 SDK 文件分发 | API 不缓存；SDK 使用五分钟公共缓存 |
 | `server/verification/cors.py` | 仅挑战路由按启用站点 Origin 授权预检及跨源响应 | 数据库检查在线程池执行，实际请求仍核对票据来源 |
 | `server/main.py`、`server/config/settings.py` | 应用工厂与显式配置注入 | 通过环境配置启动，每个测试注入独立配置 |
-| `server/cli.py` | 站点表初始化、创建、禁用与显式题型授权 | 后续加入管理界面 |
+| `server/cli.py` | 站点表初始化、创建、禁用与显式题型授权 | 图片集已有独立后台；站点管理界面待实现 |
 | `server/verification/demo.py` | 仅供本地使用的接入方示例，保存业务上下文并消费凭证 | 正式业务在自己的后端实现相同步骤 |
 | `packages/core` | 无框架依赖的请求、状态订阅、过期与请求竞争处理 | 供不同 UI 封装复用 |
 | `packages/browser` | 托管挑战界面、顶层弹窗/Shadow DOM、验证卡挂载与共享加载器 | 新交互在托管组件中扩展 |

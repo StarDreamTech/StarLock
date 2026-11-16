@@ -48,7 +48,17 @@ npm run build
 
 本地配置使用已公开的开发用 HMAC key，仅在显式 `STARLOCK_DEBUG=1` 时启用。非开发模式必须从环境提供 `STARLOCK_SECRET_KEY`，不能使用公开开发值。`STARLOCK_DEMO=1` 只在 DEBUG 模式下注册 `/demo/*`；正式接入不能使用这个演示业务后端。开发模式下可打开 [API 文档](http://127.0.0.1:8018/docs)，非开发模式关闭交互文档与 OpenAPI 路由。
 
-官网采用星锁专用紫色锁孔 Logo、暖纸与墨紫品牌视觉，进阶题型与基础题型分组展示。快速切换只显示最后选择；开发演示会串行处理会话与复核请求，避免同一页面的上下文 cookie 被旧响应覆盖。SDK 对外仍通过成功回调交还 token，不会替接入方自动提交真实业务。
+官网采用星锁专用紫色锁形 Logo、深紫与雾白品牌视觉、完整锁体场景和无衬线排版，进阶题型与基础题型分组展示。快速切换只显示最后选择；开发演示会串行处理会话与复核请求，避免同一页面的上下文 cookie 被旧响应覆盖。SDK 对外仍通过成功回调交还 token，不会替接入方自动提交真实业务。
+
+官网构建包含静态预渲染，初始 HTML 提供产品正文、接入说明与文档链接。公开项目介绍发布在星梦科技 Pages，提供规范链接、组织与项目结构化资料、站点地图和文档索引。[星锁项目介绍](https://stardreamtech.github.io/projects/starlock/)
+
+独立官网正式域名确定后，在构建时设置 `STARLOCK_PUBLIC_URL` 为 HTTPS 根地址，构建会生成 canonical、分享地址、robots.txt 和 sitemap.xml。未指定时保留本地预览的 `noindex`，以便正式地址确定后再建立独立官网索引。
+
+```bash
+STARLOCK_PUBLIC_URL=https://verify.example.com/ npm run build
+```
+
+上面的域名是配置示例。搜索收录与 AI 引用的实际表现需要在发布后观察。
 
 官网开发环境由 Vite 将 `/sdk`、`/v1`、`/demo` 转发给 FastAPI，独立网页示例只代理演示业务接口，挑战接口跨源直连。SQLite 继续保存本地站点数据，兼容既有 PBKDF2 密钥记录。完整站点控制台、生产数据库部署、TLS/网关、密钥轮换接口、容量与识别效果评估尚未完成。[模块和接入说明](docs/implementation.md) 记录了当前限制与扩展顺序。
 
@@ -91,7 +101,8 @@ import { StarLock } from '@starlock/react'
 
 - [星锁项目 Logo · SVG](assets/brand/starlock.svg)
 - [星锁项目 Logo · PNG](assets/brand/starlock.png)
-- [原生 SVG 光学星轨主视觉](examples/playground/src/BrandOrbit.vue)
+- [宽幅玻璃锁体主视觉](assets/brand/starlock-hero-v2.png)
+- [首页设计与生成提示词](docs/home-design.md)
 
 页头、favicon、验证码与独立接入示例统一使用项目专用紫色锁形标识。原图来源与早期插画见 [品牌规范与素材记录](docs/brand-assets.md)。
 
@@ -224,7 +235,9 @@ packages/vue/           托管 SDK 的 Vue 3 加载封装
 packages/react/         托管 SDK 的 React 18/19 加载封装
 examples/playground/    星梦品牌演示页与 Vite 同源代理
 examples/hosted/        无框架的独立网页跨源接入示例
-assets/brand/           三张生成插画与原有星梦 SVG 标识
+assets/brand/           标准星锁 Logo 与官网品牌插画
+assets/rotation/        原有三张品牌旋转素材
+server/assets/          新增二十张系统素材、图集清单与管理页面
 docs/                   模块边界、接入、品牌提示词与验证记录
 ```
 
@@ -346,7 +359,16 @@ env STARLOCK_DEBUG=1 .venv/bin/python server/cli.py set-site-types site_example 
 
 圆环题使用同一套会话、进度答案与凭证协议。题面为 `256 × 256` 的外圈 PNG 和内圈 PNG，`piece_width/height` 与原图相同；外圈固定，内圈绕中心旋转。正确校正角度随机为 `75°–285°`，预先反向旋进内圈图片，不在 JSON 中发送。
 
-`motion.rotation` 为 `0° → 360°`，独立贝塞尔缓动把手柄原始进度映射到显示角度；后端按相同缓动重算，再以 `5°` 容差比较圆周角距离。内圈不会自动吸附正确角度。背景每题随机配色，以不对称、穿过交界的色带和几何图形保留可判断线索。
+`motion.rotation` 为 `0° → 360°`，独立贝塞尔缓动把手柄原始进度映射到显示角度；后端按相同缓动重算，再以 `5°` 容差比较圆周角距离。内圈不会自动吸附正确角度。
+
+图片支持两种来源，由业务后端在 `POST /v1/sessions` 中配置 `rotation_source`，仅适用于 `challenge_type: "rotate"`：
+
+- **`preset`（默认）**：从后台默认图片集随机选取（出厂为 23 张、5 套系统图集，支持自定义上传），包含星锁紫色锁体、四角星锁孔与星轨。每题先随机旋转整幅图，再独立生成内圈校正角度；完成验证是对齐两层图案，不要求锁体朝上。
+- **`procedural`**：保留原有的随机几何图案，逐题生成配色和穿越交界的不对称色带。
+
+刷新继续使用会话绑定的来源；浏览器的挑战接口不接受修改来源。官网、普通网页与 React 示例提供两种来源的体验入口，前端 SDK 的接入参数不变。[素材原图、来源与提示词](docs/rotation-assets.md)。素材可能随源码公开，图库扩容不代表已经证明抗识别效果。
+
+**图片集管理已实现**：[本地后台](http://127.0.0.1:8018/admin) 支持系统/自定义图集、新建与改名、批量上传、去重、整套与单图启停、默认图库选择。业务后端可用 `image_set_id` 给旋转题和两种滑块指定图库；前端 SDK 接口不变。上传限制、管理认证、备份和调用示例见 [图片集指南](docs/image-sets.md)。本版是服务运营者后台，客户账号与多租户站点控制台仍待实现。
 
 交界只在约 10 像素宽的局部带状区域做轻度模糊，内圈边缘羽化，外圈留 3 像素重叠避免白缝；没有把整图模糊。当前强度为本地体验基线，尚未做真人完成率或识别难度的标定。
 

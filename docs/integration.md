@@ -13,6 +13,7 @@
 | 开发接入 | 普通网页、Vue 与 React 示例切换 | 本地可用 |
 | 独立接入示例 | 无框架页面跨源加载脚本和挑战 | 本地可用 |
 | 独立文档页面 | 导航式 API 与部署文档 | 待实现，当前提供 Markdown |
+| 图片集管理 | 系统图库、自定义批量上传、启停与默认选择 | `/admin` 本地可用；独立管理认证 |
 | 站点控制台 | 站点、域名、密钥和策略 | 待实现，当前通过 CLI 管理 |
 
 官网位于 `examples/playground`，独立示例位于 `examples/hosted`。两者可以构建为静态文件；开发代理不进入构建产物。公开上线时，演示业务后端需要单独设计，不能把开发模式和 `/demo/*` 直接部署为公共业务服务。
@@ -32,6 +33,7 @@ npm run dev:hosted
 - 官网：<http://127.0.0.1:5178/>
 - 独立接入网页：<http://127.0.0.1:5179/>
 - 托管脚本：<http://127.0.0.1:8018/sdk/v1/api.js>
+- 图片集管理：<http://127.0.0.1:8018/admin>
 
 `npm run dev` 会先构建托管脚本，之后修改托管组件需运行 `npm run build:sdk` 并刷新页面。`npm run build` 依次类型检查、构建 SDK、官网与独立示例，输出 `dist/sdk/v1/api.js`、`dist/playground`、`dist/hosted-example`。
 
@@ -42,6 +44,25 @@ npm run dev:hosted
 题型由接入方后端创建会话时选择：`challenge_type: "slider"`、`"bezier_slider"` 或 `"rotate"`。前端的 `StarLock.render()` 和 Vue 属性无需变化，托管 SDK 根据题面自动渲染；成功回调和服务端复核流程也相同。服务端已经绑定题型，浏览器不能切换题型降低要求。
 
 `slider` 是直线空间路径，`bezier_slider` 是曲线空间路径；两种题型都支持独立的贝塞尔速度缓动与同步旋转。每题随机使用拼图、五角星、正方形或长方形，并生成 2–3 个缺口，其中只有一个位置与角度都匹配。SDK 提交手柄原始进度，由后端重算缓动、位置和角度，接入方无需自己实现这段计算。
+
+圆环旋转支持品牌预设与原有随机几何两种图片来源。业务后端创建会话的请求示例（省略站点认证头；示例值需替换）：
+
+```json
+{
+  "site_key": "site_example",
+  "action": "register",
+  "context_id": "context_example_123",
+  "origin": "https://www.example.com",
+  "challenge_type": "rotate",
+  "rotation_source": "preset"
+}
+```
+
+`preset` 为默认值，按后台默认图库随机抽图并改变整图方向（出厂 23 张、5 套系统图集，可换成自定义图库）；`procedural` 使用原有随机几何图案。`rotation_source` 仅适用于旋转题，刷新不会更换来源。它是业务后端配置，不是 `StarLock.render()`、Vue 或 React 的属性，也不允许在浏览器挑战请求中修改。演示页的切换按钮通过开发专用 `/demo/session` 创建新会话，正式接入应在自己的业务后端决定。
+
+业务后端还可通过 `image_set_id` 指定图集（例如 `system-orbit`）；该配置仅适用于预设旋转和两种滑块。浏览器不能修改图集，刷新继续使用会话绑定的图集。未指定图集的滑块保留程序背景。[后台管理、上传与参数说明](image-sets.md)。
+
+部署时连同 `assets/rotation/`、`server/assets/image-sets/`、`server/assets/admin/` 与 SQLite 数据库一起保存，后端读取系统或自定义图片生成题面 PNG；挑战响应不包含原始素材路径、素材编号或目标角度。预设图库公开且数量有限，不能据此宣称生产抗识别能力增强。[素材说明](rotation-assets.md)。
 
 升级至本版时同步部署后端与 `0.7.0` SDK，并刷新脚本缓存；旧 `0.4` SDK 不支持变速与旋转，`0.5` SDK 不支持圆环题。新 SDK 仍可处理没有 `motion` 的旧挑战。详见 [坐标与安全布局约束](../README.md#7-直线与贝塞尔滑块已实现)。
 

@@ -26,12 +26,32 @@ describe('instant playground experience', () => {
     vi.stubGlobal('fetch', fetcher)
     mount(); await settle()
     expect(JSON.parse(fetcher.mock.calls[0][1].body).challenge_type).toBe('rotate')
+    expect(JSON.parse(fetcher.mock.calls[0][1].body).rotation_source).toBe('preset')
     expect(document.querySelector('[data-widget]')).not.toBeNull()
     expect(document.body.textContent).not.toContain('开始验证')
     widgets[0].success(); await settle()
     expect(fetcher.mock.calls[1][0]).toBe('/demo/submit')
     expect(document.body.textContent).toContain('刚刚好，是你。')
     expect(document.querySelector('[data-widget]')).toBeNull()
+  })
+
+  it('switches rotation image sources immediately and coalesces rapid source changes', async () => {
+    let finish: (value: Response) => void = () => {}
+    const fetcher = vi.fn().mockResolvedValueOnce(session('ticket.brand'))
+      .mockImplementationOnce(() => new Promise<Response>(resolve => { finish = resolve }))
+      .mockResolvedValueOnce(session('ticket.brand-new'))
+      .mockResolvedValueOnce(session('ticket.digits'))
+    vi.stubGlobal('fetch', fetcher)
+    mount(); await settle()
+    button('随机几何').click(); await settle()
+    expect(JSON.parse(fetcher.mock.calls[1][1].body).rotation_source).toBe('procedural')
+    button('图片集预设').click(); await settle()
+    expect(fetcher).toHaveBeenCalledTimes(2)
+    finish(session('ticket.obsolete')); await settle()
+    expect(JSON.parse(fetcher.mock.calls[2][1].body)).toEqual({ challenge_type: 'rotate', rotation_source: 'preset' })
+    expect(document.querySelector('[data-widget]')?.getAttribute('data-widget')).toBe('ticket.brand-new')
+    button('数字验证').click(); await settle()
+    expect(JSON.parse(fetcher.mock.calls[3][1].body)).toEqual({ challenge_type: 'digits' })
   })
 
   it('coalesces quick selections and keeps demo cookie requests in order', async () => {

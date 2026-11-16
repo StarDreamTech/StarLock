@@ -4,6 +4,8 @@ const status = document.querySelector('#status')
 const retry = document.querySelector('#retry')
 const choices = [...document.querySelectorAll('[data-kind]')]
 const script = document.querySelector('#starlock-sdk')
+const sourceChoices = [...document.querySelectorAll('[data-rotation-source]')]
+let rotationSource = 'preset'
 let widget, selected = 'rotate', revision = 0, busy = false, pending = false, autoOpen = false, disposed = false
 const controller = new AbortController()
 const ready = window.StarLock ? Promise.resolve() : new Promise((resolve, reject) => {
@@ -19,12 +21,16 @@ async function post(path, body) {
   if (!response.ok) throw new Error(result.message || '请求失败')
   return result
 }
-function choose(kind, open = true) {
-  if (kind === selected && widget && !busy) { widget.open(); return }
-  if (kind === selected && busy) { autoOpen = open; return }
+function choose(kind, open = true, source = rotationSource) {
+  const same = kind === selected && source === rotationSource
+  if (same && widget && !busy) { widget.open(); return }
+  if (same && busy) { autoOpen = open; return }
+  rotationSource = source
   selected = kind; autoOpen = open; revision++; pending = true
   submit.disabled = true; retry.hidden = true; widget?.destroy(); widget = undefined
   for (const choice of choices) choice.setAttribute('aria-pressed', String(choice.dataset.kind === kind))
+  for (const choice of sourceChoices) choice.setAttribute('aria-pressed', String(choice.dataset.rotationSource === source))
+  document.querySelector('#rotation-sources').hidden = kind !== 'rotate'
   document.querySelector('#current-kind').textContent = choices.find(choice => choice.dataset.kind === kind).querySelector('strong').textContent
   status.textContent = '正在准备新的验证…'
   void prepare()
@@ -38,7 +44,8 @@ async function prepare() {
       const current = revision
       try {
         await ready
-        const session = await post('/demo/session', { challenge_type: selected })
+        const session = await post('/demo/session', { challenge_type: selected,
+          ...(selected === 'rotate' ? { rotation_source: rotationSource } : {}) })
         if (current !== revision || disposed) continue
         widget = window.StarLock.render('#captcha', {
           siteKey: session.site_key, sessionTicket: session.session_ticket, autoOpen,
@@ -53,6 +60,7 @@ async function prepare() {
   } finally { busy = false }
 }
 for (const choice of choices) choice.addEventListener('click', () => choose(choice.dataset.kind))
+for (const choice of sourceChoices) choice.addEventListener('click', () => choose('rotate', true, choice.dataset.rotationSource))
 retry.addEventListener('click', () => { widget?.destroy(); widget = undefined; choose(selected) })
 form.addEventListener('submit', async event => {
   event.preventDefault()

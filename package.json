@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "dev": "npm run build:sdk && vite --config examples/playground/vite.config.ts --host 127.0.0.1 --port 5178 --strictPort",
-    "build": "vue-tsc --noEmit && npm run build:sdk && vite build --config examples/playground/vite.config.ts && npm run build:hosted",
+    "build": "vue-tsc --noEmit && npm run build:sdk && npm run build:site && npm run build:hosted",
+    "build:site": "vite build --config examples/playground/vite.config.ts && node scripts/prerender-home.mjs && node scripts/check-static-site.mjs",
     "test": "vitest run",
     "typecheck": "vue-tsc --noEmit",
     "build:sdk": "vite build --config packages/browser/vite.config.ts",
