@@ -13,6 +13,7 @@
 | `packages/core/src/` | 无框架依赖的 TypeScript 客户端和生命周期 |
 | `packages/browser/src/` | 托管验证 UI、Shadow DOM、弹窗和远程脚本加载 |
 | `packages/vue/src/`、`packages/react/src/` | 托管 SDK 的框架生命周期封装 |
+| `examples/static-demo/` | Pages 浏览器内试玩，复用 UI 与客户端，公开样题和本地判定 |
 | `examples/playground/`、`examples/hosted/` | 官网本地版与独立网页、React 接入示例 |
 
 模块细节以 `docs/implementation.md`、接入细节以 `docs/integration.md` 为准，不在这里复制完整接口类型。
@@ -41,3 +42,9 @@ Redis 保存会话及短期挑战状态，`service.py` 使用 WATCH/MULTI/EXEC �
 `verification/image_sets.py` 负责系统/自定义图集、规范化上传与同集去重、启停及默认池事务保护；`verification/admin.py` 与 `server/assets/admin/` 提供运营后台。生产配置独立 `STARLOCK_ADMIN_TOKEN`，管理会话使用 Redis 与 HttpOnly cookie，写操作检查精确同源；本地免口令进入仅允许 DEBUG + DEMO + 回环连接且未配置口令的组合，仍需登录会话。
 
 `image_set_id` 只能由业务后端在创建会话时指定，或在预设旋转会话创建时绑定后台默认。两种滑块可显式选图集，未指定保留程序背景；随机几何旋转和输入题拒绝图集参数。刷新保持图集并过滤停用图片，已下发题面继续在有效期内校验；不可用时明确报错，不回退其他图库。公开题面不暴露图集、素材编号或正确角度。原始素材不能作为秘密或抗识别效果证明。
+
+## 静态交互演示
+
+Pages demo 位于 `examples/static-demo/`。`scripts/generate-demo-challenges.py` 复用后端生成器导出 24 道公开题与演示解，`transport.ts` 在浏览器内提供出题、换题和判定。样题与演示答案公开，凭证带 `demo_only` 前缀。正式接入使用原有服务端信任链。
+
+`StarLockClient` 可选第二构造参数接收请求实现，`createRuntime` 的第三参数将其传入内部 Widget。正式 `api.js` 入口继续使用默认请求。demo 不改变 `StarLock.render`、Vue 或 React 的公开配置。

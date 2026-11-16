@@ -12,7 +12,7 @@ function activeElement(): HTMLElement | null {
   return element instanceof HTMLElement ? element : null
 }
 
-export function createRuntime(sdkUrl: string, nonce = ''): StarLockApi {
+export function createRuntime(sdkUrl: string, nonce = '', transport?: typeof fetch): StarLockApi {
   const source = new URL(sdkUrl)
   const defaultBase = source.origin + source.pathname.replace(/\/sdk\/v1\/api\.js$/, '').replace(/\/$/, '')
   const widgets = new WeakMap<HTMLElement, WidgetHandle>()
@@ -74,7 +74,7 @@ export function createRuntime(sdkUrl: string, nonce = ''): StarLockApi {
         dialog.addEventListener('touchmove', event => { if (event.target === dialog) event.preventDefault() }, { passive: false })
       } else shadow.append(mount)
       const app = createApp(Widget, {
-        siteKey: options.siteKey, sessionTicket: options.sessionTicket, apiBase: options.apiBase ?? defaultBase,
+        siteKey: options.siteKey, sessionTicket: options.sessionTicket, apiBase: options.apiBase ?? defaultBase, transport,
         onSuccess: (result: VerificationResult) => { response.value = result.token; status('验证通过', true); close(); options.onSuccess?.(result) },
         onExpire: () => { response.value = ''; status('验证已过期'); close(); options.onExpire?.() },
         onError: (code: string) => { response.value = ''; options.onError?.(code) },

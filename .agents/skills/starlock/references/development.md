@@ -61,3 +61,9 @@ npm run build
 ## 仓库同步核验
 
 2026-11-16，功能与官网两批提交 `82104df`、`7d39dd7` 已推送 `https://github.com/StarDreamTech/starlock` 的 `main`，远程提交号核对通过；同日重新运行 57 项后端、39 项前端测试与完整构建通过。组织 Pages 远程保持 `e1f470a`。后续状态检查以实时 `git status` 和 `git ls-remote` 为准，不以此前的测试通过或本地提交代替推送成功。
+
+## Pages 试玩构建
+
+`npm run dev:demo` 启动独立的静态体验页，默认端口 5182。`npm run build:demo` 输出 `dist/static-demo/`，完整 `npm run build` 也包含该构建。导出命令为 `node scripts/export-demo.mjs ../StarDreamTech.github.io/projects/starlock/demo`，会替换目标的生成资产目录；详细操作在 `examples/static-demo/README.md`。
+
+2026-11-16 静态 demo 轮完成 42 项前端测试、类型检查和全构建，六种题型在桌面浏览器完成。手机视口与数字题错误恢复通过，原生触屏尚未检查。后端服务代码本轮未改动，未重复后端测试。

@@ -10,9 +10,15 @@
 
 产品方向参考 Google reCAPTCHA 与 hCaptcha：以风险判断决定是否需要交互，再按场景选择合适的挑战。项目独立实现，不承诺与第三方产品的协议或安全能力等价。
 
-> 当前版本：`0.7.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、数字、字符和算术六种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 与 React 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。点选、九宫格和无感风控仍属于后续阶段。尚未发布 npm、接入正式 CDN 或进行公网部署。
+> 当前版本：`0.7.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、数字、字符和算术六种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 与 React 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。点选、九宫格和无感风控仍属于后续阶段。已提供 Pages 静态交互 demo，演示在浏览器内判定。正式验证 API、npm 包与 CDN 仍在后续部署范围。
 
-[项目介绍](https://stardreamtech.github.io/projects/starlock/) · [接入指南](docs/integration.md) · [Vue 示例](docs/examples/VueIntegration.vue) · [React 示例](docs/examples/ReactIntegration.tsx) · [验证记录](docs/verification.md)
+[在线试玩](https://stardreamtech.github.io/projects/starlock/demo/) · [项目介绍](https://stardreamtech.github.io/projects/starlock/) · [接入指南](docs/integration.md) · [Vue 示例](docs/examples/VueIntegration.vue) · [React 示例](docs/examples/ReactIntegration.tsx) · [验证记录](docs/verification.md)
+
+## 在线试玩
+
+打开 [六种验证码交互 demo](https://stardreamtech.github.io/projects/starlock/demo/)，默认进入圆环旋转题。点击题型即可在紧凑弹窗中切换，支持换题、输入、拖动和键盘微调。演示复用项目的验证码界面与客户端，在浏览器内判定公开样题。业务接入时由后端创建会话、校验答案和复核凭证。
+
+静态 demo 的源码在 `examples/static-demo/`，`npm run dev:demo` 可以独立启动。构建与发布方式见 [demo 说明](examples/static-demo/README.md)。
 
 ## 本地运行
 

@@ -6,7 +6,7 @@ import PuzzleSlider from './PuzzleSlider.vue'
 import logoSvg from '../../../assets/brand/starlock.svg?raw'
 const logo = `data:image/svg+xml,${encodeURIComponent(logoSvg)}`
 
-const props = defineProps<{ siteKey: string; sessionTicket: string; apiBase?: string }>()
+const props = defineProps<{ siteKey: string; sessionTicket: string; apiBase?: string; transport?: typeof fetch }>()
 const emit = defineEmits<{ success: [result: VerificationResult]; expire: []; error: [code: string] }>()
 const state = ref<State>({ status: 'idle', message: '' })
 const answer = ref('')
@@ -24,7 +24,7 @@ watch(() => [props.siteKey, props.sessionTicket, props.apiBase], () => {
   client?.destroy()
   answer.value = ''
   client = new StarLockClient({ siteKey: props.siteKey, sessionTicket: props.sessionTicket, apiBase: props.apiBase,
-    onSuccess: result => emit('success', result), onExpire: () => emit('expire') })
+    onSuccess: result => emit('success', result), onExpire: () => emit('expire') }, props.transport)
   unsubscribe = client.subscribe(next => {
     state.value = next
     if (next.status === 'error' && next.errorCode) emit('error', next.errorCode)

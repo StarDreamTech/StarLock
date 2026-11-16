@@ -120,7 +120,7 @@ export class StarLockClient {
   private timer?: ReturnType<typeof setTimeout>
   private generation = 0
   private expiresAt = 0
-  constructor(private options: ClientOptions) {}
+  constructor(private options: ClientOptions, private transport?: typeof fetch) {}
 
   subscribe(listener: (state: State) => void) {
     this.listeners.add(listener)
@@ -145,7 +145,7 @@ export class StarLockClient {
   private async request(path: string, body: object, signal: AbortSignal) {
     let response: Response
     try {
-      response = await fetch((this.options.apiBase || '') + path, {
+      response = await (this.transport ?? fetch)((this.options.apiBase || '') + path, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, signal,
         credentials: 'omit', body: JSON.stringify({
           site_key: this.options.siteKey, session_ticket: this.options.sessionTicket, ...body,

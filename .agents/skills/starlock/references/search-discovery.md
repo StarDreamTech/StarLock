@@ -10,6 +10,10 @@
 
 线上六页及上述资源、分享图片 HTTP 检查通过。使用 OAI-SearchBot、Googlebot 和 bingbot User-Agent 的普通公开请求通过，尚未取得实际机器人抓取日志或搜索平台收录报告。`scripts/submit-indexnow.mjs` 已通知六个 URL，返回 HTTP 202，表示收到通知且所有权验证待处理。`indexnow.txt` 按协议公开托管验证内容。
 
+## Pages 交互试玩
+
+新增 `https://stardreamtech.github.io/projects/starlock/demo/`，页面复用验证码界面，公开样题在浏览器内判定。组织首页、星锁介绍页提供试玩入口，站点地图与资料索引包含演示页，元信息和统计检查共覆盖七个页面。静态 demo 从星锁仓库构建并导出到 Pages 仓库，构建步骤见 `examples/static-demo/README.md`。公网部署结果需单独读取线上内容核验。
+
 ## 星锁独立官网构建
 
 `npm run build` 通过 `build:site` 调用 `scripts/prerender-home.mjs`，利用 Vue 服务端渲染输出完整初始 HTML。客户端继续按现有入口挂载并加载挑战。静态 HTML 提供产品正文、接入步骤和源码示例链接，避免索引完全依赖 JavaScript 执行。
