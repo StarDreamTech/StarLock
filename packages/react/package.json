@@ -1,6 +1,6 @@
 {
   "name": "@starlock/react",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "exports": "./src/index.ts",
@@ -8,6 +8,6 @@
     "react": "^18.2.0 || ^19.0.0"
   },
   "dependencies": {
-    "@starlock/browser": "0.7.0"
+    "@starlock/browser": "0.8.0"
   }
 }

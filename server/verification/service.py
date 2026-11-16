@@ -16,6 +16,7 @@ from .generators import TYPES, generate
 from .sliders import SLIDER_TYPES, matches_slider
 from .rotations import matches_rotation
 from .image_sets import ImageSetStore
+from .selections import matches_text_click, matches_semantic_grid
 
 
 @lru_cache(maxsize=4)
@@ -194,6 +195,10 @@ class VerificationService:
             require(not challenge["closed"], "ATTEMPTS_EXCEEDED", "本题尝试次数已用完，请刷新", 429)
             if state["kind"] == "rotate":
                 valid = matches_rotation(challenge["payload"], challenge["solution"], answer)
+            elif state["kind"] == "text_click":
+                valid = matches_text_click(challenge["payload"], challenge["solution"], answer)
+            elif state["kind"] == "semantic_grid":
+                valid = matches_semantic_grid(challenge["payload"], challenge["solution"], answer)
             elif state["kind"] in SLIDER_TYPES:
                 valid = matches_slider(challenge["payload"], challenge["solution"], answer)
             else:

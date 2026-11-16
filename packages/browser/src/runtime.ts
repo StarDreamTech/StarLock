@@ -17,7 +17,7 @@ export function createRuntime(sdkUrl: string, nonce = '', transport?: typeof fet
   const defaultBase = source.origin + source.pathname.replace(/\/sdk\/v1\/api\.js$/, '').replace(/\/$/, '')
   const widgets = new WeakMap<HTMLElement, WidgetHandle>()
   return {
-    version: '0.7.0', sdkUrl: source.href,
+    version: '0.8.0', sdkUrl: source.href,
     render(target, options) {
       const container = typeof target === 'string' ? document.querySelector(target) : target
       if (!(container instanceof HTMLElement)) throw new Error('找不到星锁挂载容器')

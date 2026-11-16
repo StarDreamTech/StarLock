@@ -1,0 +1,140 @@
+{
+  "tool": "built-in imagegen",
+  "date": "2026-11-16",
+  "prompt_constraints": "Use case: photorealistic-natural. One square editorial photograph for a semantic image-selection CAPTCHA. One full-bleed photo, no border, grid, collage, watermark or UI. No people, text, numbers, labels, logos, flags or symbols. Subject clearly recognizable at a 100-pixel thumbnail. Exclude the other subject categories (cars, boats, fruit) from each scene.",
+  "encoding": "JPEG quality 82, 768x768; runtime tiles JPEG quality 84, 192x192",
+  "images": [
+    {
+      "file": "car-sedan.jpg",
+      "category": "car",
+      "width": 768,
+      "height": 768,
+      "bytes": 131741,
+      "sha256": "eb03ca9aee52a42fd21ed3017711600db7ad7f4d24c565fadbc50e076b39fd52",
+      "generated_output": "call_219ba9157a8742b4a99524b0b9f71853.png",
+      "prompt_scene": "A single clearly recognizable unbranded blue sedan, full vehicle in three-quarter front side view on a quiet paved street, trees and a plain wall behind.",
+      "reviewed": true
+    },
+    {
+      "file": "car-hatchback.jpg",
+      "category": "car",
+      "width": 768,
+      "height": 768,
+      "bytes": 132593,
+      "sha256": "8766fd223011326cbd74f573e0e74d7f0c2f2d33ed0c8577cdfcc1e61437190e",
+      "generated_output": "call_a4d0dcbdf9e0427c98cfca4f4001688b.png",
+      "prompt_scene": "A single clearly recognizable unbranded white compact hatchback, full vehicle in three-quarter rear side view on a paved street beside a simple brick wall.",
+      "reviewed": true
+    },
+    {
+      "file": "car-suv.jpg",
+      "category": "car",
+      "width": 768,
+      "height": 768,
+      "bytes": 128185,
+      "sha256": "47c67437865876d7b6da824fe87318edfc17d3514cf8595668f814b78796b534",
+      "generated_output": "call_d27dc8e4f3e74774b509fbcae39f64e0.png",
+      "prompt_scene": "A single clearly recognizable unbranded dark green SUV parked on a gravel turnout with wooded hills behind, full vehicle in three-quarter front side view.",
+      "reviewed": true
+    },
+    {
+      "file": "car-coupe.jpg",
+      "category": "car",
+      "width": 768,
+      "height": 768,
+      "bytes": 95710,
+      "sha256": "a6ea8cb8416870640e0271b295031f8dba24d3293566095e50f4091fdb52e457",
+      "generated_output": "call_54cbf388bee34572a1eb4085f0c9828d.png",
+      "prompt_scene": "A single clearly recognizable unbranded red coupe, full vehicle in three-quarter side view on a clean concrete forecourt beside a contemporary building.",
+      "reviewed": true
+    },
+    {
+      "file": "boat-sail.jpg",
+      "category": "boat",
+      "width": 768,
+      "height": 768,
+      "bytes": 82890,
+      "sha256": "90823a02ed8fa2c756bc58dd883ec8b52026ffaf4c5f5a8cd0a38c5658bf6138",
+      "generated_output": "call_0580c7ad81e04d7b9ea201295b2aafb6.png",
+      "prompt_scene": "A single clearly recognizable small white sailboat with one triangular sail on calm blue lake water, entire hull and sail visible, distant natural shore.",
+      "reviewed": true
+    },
+    {
+      "file": "boat-motor.jpg",
+      "category": "boat",
+      "width": 768,
+      "height": 768,
+      "bytes": 100373,
+      "sha256": "d939f5c2797d98ec00dbb5103d7eb76b79df5c076264b7e5fce938d8d77ac1b6",
+      "generated_output": "call_4b3e04fe8d2d4d9a83ddcb54928eebf2.png",
+      "prompt_scene": "A single clearly recognizable small unbranded white motorboat with a compact cabin, floating on calm turquoise coastal water, whole hull fully visible in three-quarter side view. A low simple shoreline far behind, bright soft daylight, realistic material and familiar proportions.",
+      "reviewed": true
+    },
+    {
+      "file": "boat-kayak.jpg",
+      "category": "boat",
+      "width": 768,
+      "height": 768,
+      "bytes": 108862,
+      "sha256": "c4d6ee6afef04778b574ddcfef02eeec3af01846e37bfd8a71ae0d4bdfcfc280",
+      "generated_output": "call_ecacbcb86c5249b88fe00d82851e6659.png",
+      "prompt_scene": "A single clearly recognizable orange recreational kayak floating on calm green-blue lake water, a black double-bladed paddle resting across its cockpit. Whole long narrow hull visible diagonally with empty cockpit, slight overhead three-quarter view, distant natural shore, soft daylight, realistic proportions and material.",
+      "reviewed": true
+    },
+    {
+      "file": "boat-row.jpg",
+      "category": "boat",
+      "width": 768,
+      "height": 768,
+      "bytes": 120162,
+      "sha256": "8c8cb2cccdd145262ddc18d3743f8e143196be645422858d0a6d44f609cbd2db",
+      "generated_output": "call_0fa623ac580a47ddba1d9aeae4e2a11d.png",
+      "prompt_scene": "A single clearly recognizable traditional wooden rowboat floating on calm blue lake water, two wooden oars resting inside the empty hull. Entire pointed hull visible in side three-quarter view, wooden benches visible, natural distant shoreline, soft daylight, believable proportions and material.",
+      "reviewed": true
+    },
+    {
+      "file": "fruit-apple.jpg",
+      "category": "fruit",
+      "width": 768,
+      "height": 768,
+      "bytes": 98077,
+      "sha256": "6ad5c8afb7df01dc4797065252bab08e124738fa8b0323674b913ef258912f92",
+      "generated_output": "call_6a0263f24e6c443d9fe1dddda55ea6a6.png",
+      "prompt_scene": "A single recognizable ripe red apple with a short brown stem and one small green leaf, whole fruit centered large on a simple pale wooden tabletop with a softly blurred green garden background. Real natural surface texture, soft daylight, clear familiar proportions.",
+      "reviewed": true
+    },
+    {
+      "file": "fruit-banana.jpg",
+      "category": "fruit",
+      "width": 768,
+      "height": 768,
+      "bytes": 63744,
+      "sha256": "0a739087cb06562d042c4e83fce99fa9fbe6733db35d71ba466f27d31f07b520",
+      "generated_output": "call_53ff8af9729244ffbc1bcc6c2063c369.png",
+      "prompt_scene": "A small bunch of three ripe yellow bananas, recognizable curved fruit with natural brown tips, centered large on a simple pale ceramic kitchen counter against softly blurred warm off-white background. Entire bunch fully visible with soft daylight and realistic peel texture.",
+      "reviewed": true
+    },
+    {
+      "file": "fruit-orange.jpg",
+      "category": "fruit",
+      "width": 768,
+      "height": 768,
+      "bytes": 109803,
+      "sha256": "94e08115e78ff52c841ebd45aa1bd8360d2271c3d5fdeab8b3b3da87429e2cd4",
+      "generated_output": "call_35e64b8106014f3294a9c503f34600cc.png",
+      "prompt_scene": "Two recognizable ripe oranges, one whole with a short green leaf and one cleanly cut half showing juicy segmented orange flesh, centered large on a simple light natural stone tabletop. Soft daylight, subtle garden background, realistic rind texture and ordinary proportions.",
+      "reviewed": true
+    },
+    {
+      "file": "fruit-grapes.jpg",
+      "category": "fruit",
+      "width": 768,
+      "height": 768,
+      "bytes": 102150,
+      "sha256": "231a74223058099e060c9850c856b60b1bd98e2b0f9e5deb048525eed4111746",
+      "generated_output": "call_8cc57cef67c04ac6936a8537259581af.png",
+      "prompt_scene": "One recognizable bunch of ripe purple grapes with a short natural stem and a small green grape leaf, centered large on a simple pale wooden tabletop with softly blurred vineyard green background. Whole bunch visible, realistic round fruit with subtle bloom and soft natural daylight.",
+      "reviewed": true
+    }
+  ]
+}

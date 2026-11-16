@@ -156,4 +156,40 @@ describe('StarLockClient lifecycle', () => {
       expect(client.state.errorCode).toBe('PROTOCOL_ERROR')
     }
   })
+  it('validates ordered click coordinates and submits the exact sequence', async () => {
+    const value = { ...challenge, challenge_type: 'text_click', payload: { ...challenge.payload, required_clicks: 3 } }
+    const fetcher = vi.fn().mockResolvedValueOnce(response(value))
+      .mockResolvedValueOnce(response({ verification_token: 'token.click', expires_in: 120 }))
+    vi.stubGlobal('fetch', fetcher)
+    const client = create()
+    await client.initialize()
+    await client.verify({ points: [{ x: .2, y: .3 }] })
+    await client.verify({ points: [{ x: NaN, y: .2 }, { x: .5, y: .5 }, { x: 1, y: 0 }] })
+    expect(fetcher).toHaveBeenCalledTimes(1)
+    const points = [{ x: .2, y: .3 }, { x: .5, y: .8 }, { x: .7, y: .5 }]
+    await client.verify({ points })
+    expect(JSON.parse(fetcher.mock.calls[1][1].body).answer).toEqual({ points })
+    expect(client.state.status).toBe('success')
+  })
+
+  it('rejects duplicate grid ids, unknown selections and malformed tile images', async () => {
+    const tiles = Array.from({ length: 9 }, (_, i) => ({ id: `tile_${i}`, image: challenge.payload.image }))
+    const value = { ...challenge, challenge_type: 'semantic_grid', payload: { instruction: '选择图片', columns: 3, tiles } }
+    const fetcher = vi.fn().mockResolvedValueOnce(response(value))
+      .mockResolvedValueOnce(response({ verification_token: 'token.grid', expires_in: 120 }))
+      .mockResolvedValueOnce(response({ ...value, payload: { ...value.payload, tiles: tiles.map(() => tiles[0]) } }))
+      .mockResolvedValueOnce(response({ ...value, payload: { ...value.payload, tiles: tiles.map(t => ({ ...t, image: 'https://unexpected.example/image' })) } }))
+    vi.stubGlobal('fetch', fetcher)
+    const client = create()
+    await client.initialize()
+    for (const tile_ids of [[], ['unknown'], ['tile_1', 'tile_1']]) await client.verify({ tile_ids })
+    expect(fetcher).toHaveBeenCalledTimes(1)
+    await client.verify({ tile_ids: ['tile_3', 'tile_1'] })
+    expect(JSON.parse(fetcher.mock.calls[1][1].body).answer).toEqual({ tile_ids: ['tile_3', 'tile_1'] })
+    await client.reset('ticket.new')
+    expect(client.state.errorCode).toBe('PROTOCOL_ERROR')
+    await client.reset('ticket.other')
+    expect(client.state.errorCode).toBe('PROTOCOL_ERROR')
+  })
+
 })

@@ -1,12 +1,14 @@
 export type TextChallengeType = 'text' | 'digits' | 'arithmetic'
 export type SliderChallengeType = 'slider' | 'bezier_slider'
-export type ChallengeType = TextChallengeType | SliderChallengeType | 'rotate'
+export type ChallengeType = TextChallengeType | SliderChallengeType | 'rotate' | 'text_click' | 'semantic_grid'
 export interface Point { x: number; y: number }
 export interface MotionPath { kind: 'linear' | 'cubic_bezier'; control_points: Point[] }
 export type Easing = { kind: 'linear' } | { kind: 'cubic_bezier'; control_points: [Point, Point] }
 export interface SliderMotion { easing: Easing; rotation: { start_degrees: number; end_degrees: number } }
 export interface SliderAnswer { progress: number }
-export type Answer = string | SliderAnswer
+export interface ClickAnswer { points: Point[] }
+export interface GridAnswer { tile_ids: string[] }
+export type Answer = string | SliderAnswer | ClickAnswer | GridAnswer
 export type Status = 'idle' | 'loading' | 'ready' | 'verifying' | 'success' | 'expired' | 'error' | 'destroyed'
 interface ChallengeBase {
   decision: 'challenge'
@@ -27,7 +29,22 @@ export interface RotationChallenge extends ChallengeBase {
   payload: { instruction: string; image: string; image_width: number; image_height: number;
     piece_image: string; piece_width: number; piece_height: number; motion: SliderMotion }
 }
-export type Challenge = TextChallenge | SliderChallenge | RotationChallenge
+export interface TextClickChallenge extends ChallengeBase {
+  challenge_type: 'text_click'
+  payload: { instruction: string; image: string; image_width: number; image_height: number; required_clicks: number }
+}
+export interface GridChallenge extends ChallengeBase {
+  challenge_type: 'semantic_grid'
+  payload: { instruction: string; columns: 3; tiles: { id: string; image: string }[] }
+}
+export type Challenge = TextChallenge | SliderChallenge | RotationChallenge | TextClickChallenge | GridChallenge
+
+export function isTextClick(challenge: Challenge): challenge is TextClickChallenge {
+  return challenge.challenge_type === 'text_click'
+}
+export function isGrid(challenge: Challenge): challenge is GridChallenge {
+  return challenge.challenge_type === 'semantic_grid'
+}
 
 export function isSlider(challenge: Challenge): challenge is SliderChallenge | RotationChallenge {
   return challenge.challenge_type === 'slider' || challenge.challenge_type === 'bezier_slider' || challenge.challenge_type === 'rotate'
@@ -73,13 +90,21 @@ function validMotion(motion: SliderMotion | undefined): boolean {
 }
 
 function validChallenge(data: Challenge): boolean {
-  const payload = data?.payload
   const png = (value: unknown) => typeof value === 'string' && value.startsWith('data:image/png;base64,')
   const dimension = (value: number) => Number.isInteger(value) && value > 0 && value <= 2048
-  if (data?.decision !== 'challenge' || typeof data.challenge_id !== 'string' || !data.challenge_id || !payload ||
-      typeof payload.instruction !== 'string' || !png(payload.image) ||
-      !dimension(payload.image_width) || !dimension(payload.image_height) ||
+  if (data?.decision !== 'challenge' || typeof data.challenge_id !== 'string' || !data.challenge_id || !data.payload ||
+      typeof data.payload.instruction !== 'string' ||
       !Number.isFinite(data.expires_in) || data.expires_in <= 0 || data.expires_in > 300) return false
+  if (isGrid(data)) {
+    const tiles = data.payload.tiles
+    return data.payload.columns === 3 && Array.isArray(tiles) && tiles.length === 9 &&
+      tiles.every(tile => tile && typeof tile.id === 'string' && tile.id.length > 0 && tile.id.length <= 80 &&
+        (png(tile.image) || (typeof tile.image === 'string' && tile.image.startsWith('data:image/jpeg;base64,')))) &&
+      new Set(tiles.map(tile => tile.id)).size === 9
+  }
+  const payload = data.payload
+  if (!png(payload.image) || !dimension(payload.image_width) || !dimension(payload.image_height)) return false
+  if (isTextClick(data)) return Number.isInteger(data.payload.required_clicks) && data.payload.required_clicks >= 1 && data.payload.required_clicks <= 6
   if (data.challenge_type === 'rotate') return png(data.payload.piece_image) && !!data.payload.motion && validMotion(data.payload.motion) &&
     payload.image_width === payload.image_height && data.payload.piece_width === payload.image_width && data.payload.piece_height === payload.image_height &&
     data.payload.motion.rotation.start_degrees === 0 && data.payload.motion.rotation.end_degrees === 360
@@ -205,10 +230,26 @@ export class StarLockClient {
   }
   async verify(answer: Answer) {
     if (this.state.status !== 'ready' || !this.state.challenge) return
-    const valid = isSlider(this.state.challenge)
-      ? typeof answer === 'object' && answer !== null && Number.isFinite(answer.progress) && answer.progress >= 0 && answer.progress <= 1
-      : typeof answer === 'string' && !!answer.trim()
-    if (!valid) { this.publish({ ...this.state, message: isSlider(this.state.challenge) ? '请先调整拼图位置' : '请先输入答案' }); return }
+    const challenge = this.state.challenge
+    let valid: boolean
+    if (isTextClick(challenge)) {
+      valid = typeof answer === 'object' && answer !== null && 'points' in answer && Array.isArray(answer.points) &&
+        answer.points.length === challenge.payload.required_clicks && answer.points.every(point => point &&
+          [point.x, point.y].every(value => Number.isFinite(value) && value >= 0 && value <= 1))
+    } else if (isGrid(challenge)) {
+      const ids = new Set(challenge.payload.tiles.map(tile => tile.id))
+      valid = typeof answer === 'object' && answer !== null && 'tile_ids' in answer && Array.isArray(answer.tile_ids) &&
+        answer.tile_ids.length > 0 && answer.tile_ids.length <= 9 && new Set(answer.tile_ids).size === answer.tile_ids.length &&
+        answer.tile_ids.every(id => ids.has(id))
+    } else if (isSlider(challenge)) {
+      valid = typeof answer === 'object' && answer !== null && 'progress' in answer &&
+        Number.isFinite(answer.progress) && answer.progress >= 0 && answer.progress <= 1
+    } else valid = typeof answer === 'string' && !!answer.trim()
+    if (!valid) {
+      const message = isTextClick(challenge) || isGrid(challenge) ? '请按提示完成选择' : isSlider(challenge) ? '请先调整拼图位置' : '请先输入答案'
+      this.publish({ ...this.state, message })
+      return
+    }
     const challengeId = this.state.challenge.challenge_id
     const operation = this.begin('verifying')
     try {

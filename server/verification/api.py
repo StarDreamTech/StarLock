@@ -94,7 +94,7 @@ class Input(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, strict=True, extra="forbid")
 
 
-ChallengeKind = Literal["text", "digits", "arithmetic", "slider", "bezier_slider", "rotate"]
+ChallengeKind = Literal["text", "digits", "arithmetic", "slider", "bezier_slider", "rotate", "text_click", "semantic_grid"]
 ImageSetId = Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]{1,80}$")]
 
 
@@ -118,8 +118,21 @@ class SliderAnswer(Input):
     progress: float = Field(ge=0, le=1, allow_inf_nan=False)
 
 
+class ClickPoint(Input):
+    x: float = Field(ge=0, le=1, allow_inf_nan=False)
+    y: float = Field(ge=0, le=1, allow_inf_nan=False)
+
+
+class ClickAnswer(Input):
+    points: list[ClickPoint] = Field(min_length=1, max_length=6)
+
+
+class GridAnswer(Input):
+    tile_ids: list[Annotated[str, Field(min_length=1, max_length=80)]] = Field(min_length=1, max_length=9)
+
+
 class AnswerInput(BrowserInput):
-    answer: Annotated[str, Field(min_length=1, max_length=32)] | SliderAnswer
+    answer: Annotated[str, Field(min_length=1, max_length=32)] | SliderAnswer | ClickAnswer | GridAnswer
 
 
 class ConsumeInput(Input):
@@ -171,7 +184,7 @@ def create_challenge(data: BrowserInput, request: Request, service: Service):
 def verify_challenge(data: AnswerInput, challenge_id: str, request: Request, service: Service):
     require(len(challenge_id) <= 80, "INVALID_REQUEST", "题目标识无效")
     return service.verify(data.session_ticket, data.site_key, request.headers.get("Origin", ""),
-                          challenge_id, data.answer.model_dump() if isinstance(data.answer, SliderAnswer) else data.answer)
+                          challenge_id, data.answer if isinstance(data.answer, str) else data.answer.model_dump())
 
 
 @router.post("/v1/siteverify")
@@ -197,7 +210,7 @@ def create_app(settings=None, sites=None, redis_client=None):
         await run_in_threadpool(app.state.service.image_sets.initialize)
         yield
 
-    app = FastAPI(title="StarLock API", version="0.7.0", lifespan=lifespan,
+    app = FastAPI(title="StarLock API", version="0.8.0", lifespan=lifespan,
                   docs_url="/docs" if settings.debug else None, redoc_url=None,
                   openapi_url="/openapi.json" if settings.debug else None)
     app.state.service = VerificationService(settings, sites, client=redis_client)

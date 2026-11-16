@@ -17,7 +17,7 @@ const handle = () => ({
   reset: vi.fn().mockResolvedValue(undefined), getResponse: vi.fn(() => ''), destroy: vi.fn(),
 })
 const sdk = (render: StarLockApi['render']): StarLockApi => ({
-  version: '0.7.0', sdkUrl: 'https://verify.example/sdk/v1/api.js', render,
+  version: '0.8.0', sdkUrl: 'https://verify.example/sdk/v1/api.js', render,
 })
 
 beforeEach(() => {

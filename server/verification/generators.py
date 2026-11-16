@@ -11,8 +11,9 @@ from random import SystemRandom
 from PIL import Image, ImageDraw, ImageFont
 from .sliders import SLIDER_TYPES, generate_slider
 from .rotations import generate_rotation
+from .selections import generate_text_click, generate_semantic_grid
 
-TYPES = ("text", "digits", "arithmetic", *SLIDER_TYPES, "rotate")
+TYPES = ("text", "digits", "arithmetic", *SLIDER_TYPES, "rotate", "text_click", "semantic_grid")
 ALPHABET = "ABDEFGHJLMNPQRT3456789"
 
 
@@ -26,6 +27,9 @@ class GeneratedChallenge:
 def generate(kind, rotation_source="preset", image=None):
     if kind not in TYPES:
         raise ValueError("Unsupported challenge type")
+    if kind in ("text_click", "semantic_grid"):
+        payload, solution = generate_text_click() if kind == "text_click" else generate_semantic_grid()
+        return GeneratedChallenge("", payload, solution)
     if kind in SLIDER_TYPES:
         payload, solution = generate_slider(kind, image=image)
         return GeneratedChallenge("", payload, solution)

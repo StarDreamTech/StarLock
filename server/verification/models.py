@@ -19,7 +19,7 @@ class Site:
     secret_hash: str = "!"
     origins: list[str] = field(default_factory=list)
     actions: list[str] = field(default_factory=list)
-    challenge_types: list[str] = field(default_factory=lambda: ["text", "digits", "arithmetic", "slider", "bezier_slider", "rotate"])
+    challenge_types: list[str] = field(default_factory=lambda: ["text", "digits", "arithmetic", "slider", "bezier_slider", "rotate", "text_click", "semantic_grid"])
     active: bool = True
 
     def set_secret(self, value):
