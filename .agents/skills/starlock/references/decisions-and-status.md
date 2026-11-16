@@ -13,6 +13,8 @@
 - 标准 Logo 与官网场景插画分开；插画不能替代项目标识。官网视觉资料见 `docs/brand-assets.md`、`docs/home-design.md`，与 `examples/playground/` 当前源码对照，旧首页设计记录不代表现行实现；当前官网和图集后台均有浏览器运行记录，见 `docs/verification.md`。
 - 当前官网为深紫/雾白、无衬线排版，完整紫色玻璃锁体贯穿首屏；标准 Logo 未改。先前的宋体加方形配图及抽象星轨首屏已退出使用。源码为 `examples/playground/src/App.vue`、`home.css`；主视觉原图 `assets/brand/starlock-hero-v2.png`，网页使用约 36 KB 的 WebP 衍生图，提示词与校验见 `docs/home-design.md`。
 
+- 业务后端 SDK 优先提供 Python 与 Go。当前已实现同步 Python 和带 context 的 Go 标准库客户端，验证服务继续沿用 FastAPI。来源 `docs/server-sdks.md`。
+
 ## 已核实实现与易错点
 
 - 四段验证 API、站点授权、短期会话、一次性复核与八种题型已有实现，详见 `architecture.md` 和对应源码。

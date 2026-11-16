@@ -19,6 +19,7 @@
 | `server/main.py`、`server/config/settings.py` | 应用工厂与显式配置注入 | 通过环境配置启动，每个测试注入独立配置 |
 | `server/cli.py` | 站点表初始化、创建、禁用与显式题型授权 | 图片集已有独立后台；站点管理界面待实现 |
 | `server/verification/demo.py` | 仅供本地使用的接入方示例，保存业务上下文并消费凭证 | 正式业务在自己的后端实现相同步骤 |
+| `sdks/python`、`sdks/go` | 业务后端创建会话、一次性凭证复核与类型化错误 | 标准库 HTTP 客户端，支持网关前缀；Go 支持 context |
 | `packages/core` | 无框架依赖的请求、状态订阅、过期与请求竞争处理 | 供不同 UI 封装复用 |
 | `packages/browser` | 托管挑战界面、顶层弹窗/Shadow DOM、验证卡挂载与共享加载器 | 新交互在托管组件中扩展 |
 | `packages/vue` | 加载托管脚本、挂载、销毁、转发结果与错误 | 不打包挑战界面 |

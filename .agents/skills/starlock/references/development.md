@@ -67,3 +67,12 @@ npm run build
 `npm run dev:demo` 启动独立的静态体验页，默认端口 5182。`npm run build:demo` 输出 `dist/static-demo/`，完整 `npm run build` 也包含该构建。导出命令为 `node scripts/export-demo.mjs ../StarDreamTech.github.io/projects/starlock/demo`，会替换目标的生成资产目录；详细操作在 `examples/static-demo/README.md`。
 
 2026-11-16 文字点选与语义九宫格轮完成 61 项后端、49 项前端测试、类型检查及完整构建。Vue 官网与 React 手机模拟视口均完成两种新题的实际服务端复核；静态 demo 完成两种新题，九宫格 390×844 视口的弹窗为 340×564，无横向溢出。真实触屏与 Safari/Firefox 尚未检查。单题懒加载及压缩图像尺寸依据 `docs/selection-assets.md`。
+
+
+## 服务端 SDK 验证
+
+2026-11-16 新增 Python / Go SDK。Python 源码及安装后的 wheel 均通过七项测试；Go 六项常规测试通过竞态检测，`go vet` 通过，另由服务端的隔离 HTTP 测试运行 `TestLiveAPI`。完整服务端六十三项、前端四十九项及全构建通过。
+
+`server/verification/tests/test_server_sdks.py` 使用临时站点数据库、HTTP 端口与隔离 Redis 命名空间，分别由 Python 与 Go 创建八种会话，再完成实际挑战与一次性复核，检查错误上下文和重复消费。没有 Go 环境时，仅跨语言那项跳过，不能据此声称已完成 Go 实测。
+
+Python 独立单元入口为 `PYTHONPATH=sdks/python/src python -m unittest discover -s sdks/python/tests -v`。Go 在 `sdks/go` 内运行 `go test -race -count=1 -timeout=30s ./...` 和 `go vet ./...`。Python 构建采用 `uv build --wheel sdks/python`，构建目录与 egg-info 已在该 SDK 的 `.gitignore` 中排除。最低语法目标 Python 3.10 / Go 1.22，本轮实际执行环境为 Python 3.12.13、Go 1.25.0，其他版本待独立测试。

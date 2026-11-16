@@ -12,7 +12,7 @@
 
 > 当前版本：`0.8.0` 本地开发版。Python + FastAPI + Redis 提供验证 API，托管 `api.js` 提供圆环旋转、直线滑块、曲线滑块、文字顺序点选、语义九宫格、数字、字符和算术八种验证界面。滑块支持独立贝塞尔速度缓动、同步旋转、四种图形及多缺口干扰；Vue 3 与 React 组件通过加载器复用同一份远程 SDK。已实现按站点来源授权的跨源挑战接口，保留业务后端创建会话与复核凭证的流程。文字点选和静态语义九宫格已实现；多轮换图、无感风控和行为评分待开发。已提供 Pages 静态交互 demo，演示在浏览器内判定。正式验证 API、npm 包与 CDN 仍在后续部署范围。
 
-[在线试玩](https://stardreamtech.github.io/projects/starlock/demo/) · [项目介绍](https://stardreamtech.github.io/projects/starlock/) · [接入指南](docs/integration.md) · [Vue 示例](docs/examples/VueIntegration.vue) · [React 示例](docs/examples/ReactIntegration.tsx) · [验证记录](docs/verification.md)
+[在线试玩](https://stardreamtech.github.io/projects/starlock/demo/) · [项目介绍](https://stardreamtech.github.io/projects/starlock/) · [接入指南](docs/integration.md) · [Vue 示例](docs/examples/VueIntegration.vue) · [React 示例](docs/examples/ReactIntegration.tsx) · [Python / Go SDK](docs/server-sdks.md) · [验证记录](docs/verification.md)
 
 ## 在线试玩
 
@@ -82,6 +82,24 @@ STARLOCK_PUBLIC_URL=https://verify.example.com/ npm run build
 - `site_key` 可以公开；`site_secret` 只存在接入方后端。前端拿到 token 后仍须由自己的后端调用 `/v1/siteverify`。
 
 [官网规划与完整接入指南](docs/integration.md) 包含组件示例、地址约定、部署边界和后续交付顺序。
+
+### Python 与 Go 业务后端接入
+
+已提供 Python 同步 SDK 和 Go SDK，分别位于 `sdks/python` 与 `sdks/go`。两者使用标准库，封装会话创建、八种题型参数、一次性凭证复核、超时及类型化错误，Go 接受 context 并支持并发复用。
+
+Python 从本仓库安装。
+
+```bash
+pip install ./sdks/python
+```
+
+Go 从源码分支安装。
+
+```bash
+go get github.com/StarDreamTech/starlock/sdks/go@main
+```
+
+业务后端保存动作与上下文，创建会话后将票据交给 HTML、Vue 或 React 组件；前端完成后由业务后端复核 token 再执行业务。验证服务当前采用 FastAPI，业务接入可以使用 Python、Go 或其他 HTTP 客户端。PyPI 与 Go 版本标签尚未发布。[Python / Go 完整指南](docs/server-sdks.md)
 
 ### React 快速接入
 

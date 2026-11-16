@@ -38,7 +38,7 @@ const data = {
   '@id': `${projectUrl}#software`, name: '星锁 StarLock', description,
   url: projectUrl, codeRepository: 'https://github.com/StarDreamTech/starlock',
   license: 'https://github.com/StarDreamTech/starlock/blob/main/LICENSE',
-  programmingLanguage: ['TypeScript', 'Python'],
+  programmingLanguage: ['TypeScript', 'Python', 'Go'],
   author: { '@type': 'Organization', name: '星梦科技 StarDreamTech', url: 'https://stardreamtech.github.io/' },
 };
 const tags = [

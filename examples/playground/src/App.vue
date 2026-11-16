@@ -208,6 +208,7 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
             <dl><dt>托管脚本 · 当前可用</dt><dd><code>/sdk/v1/api.js</code><p>默认调用脚本所在服务的验证 API，普通网页无需安装框架。</p></dd>
               <dt>Vue / React 封装</dt><dd><code>sdkUrl / sdk-url</code><p>自动加载并复用脚本，处理组件挂载、销毁和回调。</p></dd>
               <dt>跨源 API · 已实现</dt><dd><p>登记接入网站来源后，挑战接口支持跨源请求。站点密钥继续保存在后端。</p></dd></dl>
+            <a class="hosted-demo-link" href="https://github.com/StarDreamTech/starlock/blob/main/docs/server-sdks.md">Python / Go 服务端 SDK ↗</a>
             <a class="hosted-demo-link" :href="demoUrls.html">普通网页接入示例 ↗</a>
             <a class="hosted-demo-link" :href="demoUrls.react">React 接入示例 ↗</a>
             <p class="integration-status">示例中的 /demo 接口仅用于本地联调。npm 包、正式域名、CDN 部署与站点控制台尚未发布。</p>

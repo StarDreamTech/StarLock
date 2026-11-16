@@ -11,6 +11,7 @@
 | `server/verification/selections.py` | 文字点选、语义九宫格生成及私有答案校验 |
 | `server/verification/sliders.py`、`server/verification/rotations.py` | 直线/曲线拼图、旋转题的生成与几何校验 |
 | `server/verification/cors.py` | 按启用站点的精确 Origin 授权浏览器挑战接口 |
+| `sdks/python/`、`sdks/go/` | Python 同步 / Go context 服务端客户端，仅封装会话创建与一次性复核 |
 | `packages/core/src/` | 无框架依赖的 TypeScript 客户端和生命周期 |
 | `packages/browser/src/` | 托管验证 UI、Shadow DOM、弹窗和远程脚本加载 |
 | `packages/vue/src/`、`packages/react/src/` | 托管 SDK 的框架生命周期封装 |
@@ -49,3 +50,9 @@ Redis 保存会话及短期挑战状态，`service.py` 使用 WATCH/MULTI/EXEC �
 Pages demo 位于 `examples/static-demo/`。`scripts/generate-demo-challenges.py` 复用后端生成器导出 32 道公开题与演示解，`transport.ts` 在浏览器内提供出题、换题和判定。按单题 `challenges/<题型>/<0–3>.json` 加载，换题时再获取，页面内缓存；聚合 JSON 保留给旧缓存入口与测试。样题与演示答案公开，凭证带 `demo_only` 前缀。正式接入使用原有服务端信任链。
 
 `StarLockClient` 可选第二构造参数接收请求实现，`createRuntime` 的第三参数将其传入内部 Widget。正式 `api.js` 入口继续使用默认请求。demo 不改变 `StarLock.render`、Vue 或 React 的公开配置。
+
+## 业务后端 SDK
+
+`sdks/python` 提供 `Client.create_session` / `siteverify` 和冻结结果对象，`sdks/go` 提供 `CreateSession` / `SiteVerify`、context 和并发复用。两者只使用标准库，支持八种会话题型、旋转来源与图集参数、网关路径前缀、超时及 API 错误码。成功响应再次核对站点、动作和上下文；禁止 HTTP 重定向，不自动重试，避免一次性消费结果不确定时重复请求。Go 客户端配置格式化隐藏站点密钥，Python Client 默认表示不含字段。
+
+Python 为同步客户端，异步路由中交给线程池。Python wheel 已可构建，PyPI 与 Go 版本标签尚未发布，Go 模块路径为 `github.com/StarDreamTech/starlock/sdks/go`。源码安装及完整示例在 `docs/server-sdks.md`。SDK 服务于接入方业务后端，当前验证服务仍采用 FastAPI。
