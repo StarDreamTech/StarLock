@@ -1,0 +1,9 @@
+{
+  "site_key": "site_sdk_test",
+  "session": {"site_key": "site_sdk_test", "session_ticket": "session.example", "expires_in": 300},
+  "verification": {
+    "success": true, "site_key": "site_sdk_test", "action": "login", "context_id": "context_sdk_example_123",
+    "hostname": "app.example.com", "challenge_type": "semantic_grid", "verified_at": "2026-11-16T00:00:00+00:00"
+  },
+  "error": {"error_code": "RATE_LIMITED", "message": "操作太频繁，请稍后重试", "request_id": "request_example", "retry_after": 60}
+}

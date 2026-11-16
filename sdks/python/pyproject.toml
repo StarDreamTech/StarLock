@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "starlock-sdk"
+version = "0.8.0"
+description = "StarLock server-side session and verification client"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+authors = [{name = "StarDreamTech"}]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/StarDreamTech/starlock"
+Documentation = "https://github.com/StarDreamTech/starlock/blob/main/docs/server-sdks.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+starlock = ["py.typed"]
