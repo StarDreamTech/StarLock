@@ -62,7 +62,7 @@ footer span { margin-right: auto; }
   main { padding: 20px 5% 26px; }
   .playground { grid-template-columns: 1fr; gap: 28px; }
   .eyebrow { margin-bottom: 20px; }
-  h1 { font-size: 54px; letter-spacing: -2px; }
+  h1 { font-size: clamp(36px, 11vw, 48px); letter-spacing: -2px; }
   h1 br { display: none; }
   .art-panel { height: 260px; border-radius: 18px; }
   .art { object-position: right 45%; }
