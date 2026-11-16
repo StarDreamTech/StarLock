@@ -54,7 +54,7 @@ if (publicUrl) {
   const url = publicUrl.href;
   html = html.replace('content="noindex, follow"', 'content="index, follow, max-image-preview:large"');
   tags.push(`<link rel="canonical" href="${url}">`, `<meta property="og:url" content="${url}">`,
-    `<meta property="og:image" content="${url}brand/starlock-hero-v2.png">`,
+    `<meta property="og:image" content="${url}brand/starlock-hero-v2.webp">`,
     '<meta property="og:image:alt" content="星锁紫色玻璃锁体与四角星锁孔">');
   await writeFile(`${directory}robots.txt`, `User-agent: *\nAllow: /\n\nSitemap: ${url}sitemap.xml\n`);
   await writeFile(`${directory}sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url}</loc></url></urlset>\n`);

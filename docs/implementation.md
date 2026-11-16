@@ -1,6 +1,6 @@
-# 模块与接入（0.7.0）
+# 模块与接入（0.8.0）
 
-三种基础题型、直线/曲线滑块及圆环旋转共用前后端协议。公开接口和演示业务后端分开，滑块复用会话、挑战、凭证生命周期。
+三种基础输入题、直线/曲线滑块、圆环旋转、文字点选与语义九宫格共用前后端协议。公开接口和演示业务后端分开，滑块复用会话、挑战、凭证生命周期。
 
 ## 模块边界
 
@@ -8,6 +8,7 @@
 | --- | --- | --- |
 | `server/verification/generators.py` | 字符、纯数字、算术题的图片、题面及内部答案 | 新题型在生成器与校验器分别实现；公开参数与答案分开 |
 | `server/verification/sliders.py` | 四种图形、多缺口、路径/缓动/旋转、原图位置与角度校验 | 目标与容差只存在服务端，不能使用客户端判定 |
+| `server/verification/selections.py` | 文字点选图、顺序坐标校验、语义九宫格与正确集合校验 | 新素材需审核标签；原图与私有解分离 |
 | `server/verification/rotations.py` | 品牌预设/随机几何双来源、整图随机方向、双层圆环、局部模糊/羽化、服务端角度判定 | 来源在业务会话绑定；目标只存在服务端，界面仅提交手柄进度 |
 | `server/verification/image_sets.py` | 系统/自定义图片集、规范化上传、并发去重、启停与默认池保护 | 与站点共用 SQLite，后端会话绑定图库 |
 | `server/verification/admin.py`、`server/assets/admin/` | 图集管理界面、独立管理认证、同源检查与私有预览 | 不复用站点密钥，不开放管理跨域 |
@@ -118,7 +119,7 @@ const emit = defineEmits<{ verified: [token: string] }>()
 
 ## 下一阶段
 
-直线和贝塞尔滑块已实现，协议、坐标和旧站点开启命令见 [README 第 7 节](../README.md#7-直线与贝塞尔滑块已实现)。下一步是顺序点选，再实现静态九宫格；无感与行为评分随后开发。当前滑块验证位置与角度，不声称能够通过轨迹判断用户身份。
+直线和贝塞尔滑块已实现，协议、坐标和旧站点开启命令见 [README 第 7 节](../README.md#7-直线与贝塞尔滑块已实现)。文字顺序点选和静态语义九宫格已经接入相同生命周期，详见 [README 第 8 节](../README.md#8-文字点选与语义九宫格已实现)。下一步扩展语义题库管理、多轮换图、无感策略与行为评分。当前滑块验证位置与角度，不声称能够通过轨迹判断用户身份。
 
 实现参考：[FastAPI 并发与线程池](https://fastapi.tiangolo.com/async/)、[FastAPI 测试](https://fastapi.tiangolo.com/tutorial/testing/)、[Redis 原子脚本与事务语义](https://redis.io/docs/latest/develop/programmability/)、[Vue TypeScript 支持](https://vuejs.org/guide/typescript/overview)。
 

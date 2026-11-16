@@ -1,7 +1,7 @@
 import { StrictMode, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { StarLock } from '@starlock/react'
-import type { VerificationResult } from '@starlock/core'
+import type { ChallengeType, VerificationResult } from '@starlock/core'
 
 interface Session { site_key: string; session_ticket: string }
 
@@ -21,7 +21,7 @@ function Demo() {
     return data
   }
 
-  async function prepare(kind: 'rotate' | 'digits', source: 'preset' | 'procedural' = 'preset') {
+  async function prepare(kind: ChallengeType, source: 'preset' | 'procedural' = 'preset') {
     if (busy) return
     const request = ++current.current
     setBusy(true)
@@ -70,6 +70,8 @@ function Demo() {
         <div className="react-demo-actions">
           <button className="primary-link" disabled={busy} onClick={() => void prepare('rotate')}>星梦预设 · 圆环旋转</button>
           <button className="primary-link" disabled={busy} onClick={() => void prepare('rotate', 'procedural')}>随机几何 · 圆环旋转</button>
+          <button className="primary-link" disabled={busy} onClick={() => void prepare('text_click')}>文字顺序点选</button>
+          <button className="primary-link" disabled={busy} onClick={() => void prepare('semantic_grid')}>语义九宫格</button>
           <button className="primary-link" disabled={busy} onClick={() => void prepare('digits')}>数字验证</button>
         </div>
         {session && <StarLock

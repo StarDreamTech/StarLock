@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#f4f0e9" />
   <title>星锁 · 悬浮验证接入示例</title><link rel="icon" type="image/svg+xml" href="/brand/starlock.svg" />
   <link rel="stylesheet" href="/style.css" />
-  <script id="starlock-sdk" src="http://127.0.0.1:8018/sdk/v1/api.js?v=0.7.0-compact.1" defer></script>
+  <script id="starlock-sdk" src="http://127.0.0.1:8018/sdk/v1/api.js?v=0.8.0-selections.1" defer></script>
   <script type="module" src="/main.js"></script>
 </head>
 <body>
@@ -17,9 +17,11 @@
           <button type="button" data-kind="rotate" aria-pressed="true"><span>01</span><strong>圆环旋转</strong><small>内外之间，找回完整。</small><i aria-hidden="true">↗</i></button>
           <button type="button" data-kind="bezier_slider" aria-pressed="false"><span>02</span><strong>曲线拼图</strong><small>沿着曲线，唤醒直觉。</small><i aria-hidden="true">↗</i></button>
           <button type="button" data-kind="slider" aria-pressed="false"><span>03</span><strong>旋转滑块</strong><small>直线运动，角度变换。</small><i aria-hidden="true">↗</i></button>
-          <button type="button" data-kind="digits" aria-pressed="false"><span>04</span><strong>数字验证</strong><small>熟悉而轻巧。</small><i aria-hidden="true">↗</i></button>
-          <button type="button" data-kind="text" aria-pressed="false"><span>05</span><strong>字符验证</strong><small>辨认清晰的答案。</small><i aria-hidden="true">↗</i></button>
-          <button type="button" data-kind="arithmetic" aria-pressed="false"><span>06</span><strong>算术验证</strong><small>一次简单的思考。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="text_click" aria-pressed="false"><span>04</span><strong>文字点选</strong><small>依次找到指定文字。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="semantic_grid" aria-pressed="false"><span>05</span><strong>语义九宫格</strong><small>读懂问题，选出图片。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="digits" aria-pressed="false"><span>06</span><strong>数字验证</strong><small>熟悉而轻巧。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="text" aria-pressed="false"><span>07</span><strong>字符验证</strong><small>辨认清晰的答案。</small><i aria-hidden="true">↗</i></button>
+          <button type="button" data-kind="arithmetic" aria-pressed="false"><span>08</span><strong>算术验证</strong><small>一次简单的思考。</small><i aria-hidden="true">↗</i></button>
         </div>
         <div class="rotation-sources" id="rotation-sources" role="group" aria-label="旋转图片来源"><span>让画面，也属于星梦</span><div><button type="button" data-rotation-source="preset" aria-pressed="true">星梦预设 <small>三幅品牌插画</small></button><button type="button" data-rotation-source="procedural" aria-pressed="false">随机几何 <small>每题生成图案</small></button></div></div>
         <a class="hosted-demo-link" href="/react.html">React 接入示例 ↗</a>

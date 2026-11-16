@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'server'))
 from verification.generators import TYPES, generate
 from verification.image_sets import system_catalog
+from verification.selections import matches_text_click, matches_semantic_grid
 from verification.rotations import matches_rotation
 from verification.sliders import matches_slider, motion_state, eased_progress
 
@@ -25,7 +26,11 @@ for kind in TYPES:
         generated = generate(kind, image=source)
         challenge = dict(decision='challenge', challenge_id=f'demo_{kind}_{index}',
                          challenge_type=kind, expires_in=120, payload=generated.payload)
-        if generated.solution is not None:
+        if kind == 'text_click':
+            assert matches_text_click(generated.payload, generated.solution, {'points': generated.solution['targets']})
+        elif kind == 'semantic_grid':
+            assert matches_semantic_grid(generated.payload, generated.solution, generated.solution)
+        elif generated.solution is not None:
             low, high = 0., 1.
             for _ in range(40):
                 middle = (low + high) / 2
@@ -43,5 +48,10 @@ for kind in TYPES:
 output = ROOT / 'examples/static-demo/public/challenges.json'
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(json.dumps(samples, ensure_ascii=False, separators=(',', ':')) + '\n')
-assert len(samples) == 24
-print(f'Generated 24 public demo samples, {output.stat().st_size:,} bytes. Answers are public and evaluated in the browser.')
+assert len(samples) == len(TYPES) * 4
+for kind in TYPES:
+    directory = output.parent / 'challenges' / kind
+    directory.mkdir(parents=True, exist_ok=True)
+    for index, item in enumerate(item for item in samples if item['challenge']['challenge_type'] == kind):
+        (directory / f'{index}.json').write_text(json.dumps(item, ensure_ascii=False, separators=(',', ':')) + '\n')
+print(f'Generated {len(samples)} public demo samples, {output.stat().st_size:,} bytes. Answers are public and evaluated in the browser.')

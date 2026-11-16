@@ -9,6 +9,8 @@ const samples = JSON.parse(readFileSync(new URL('../public/challenges.json', imp
 const clients: StarLockClient[] = []
 function solve(sample: DemoSample): Answer {
   if (!sample.solution) return sample.answer
+  if ('targets' in sample.solution) return { points: sample.solution.targets }
+  if ('tile_ids' in sample.solution) return { tile_ids: sample.solution.tile_ids }
   const solution = sample.solution
   let low = 0, high = 1
   for (let index = 0; index < 40; index++) {
@@ -34,16 +36,37 @@ function create(bank: DemoSample[]) {
 afterEach(() => { clients.forEach(client => client.destroy()); clients.length = 0; vi.unstubAllGlobals(); vi.useRealTimers() })
 
 describe('public static playground', () => {
+  it('loads one sample on demand and requests a new one only when refreshing', async () => {
+    const bank = samples.filter(sample => sample.challenge.challenge_type === 'text_click')
+    const load = vi.fn().mockResolvedValueOnce(bank[0]).mockResolvedValueOnce(bank[1])
+    const session = createDemoTransport('text_click', load)
+    const client = new StarLockClient({ siteKey: 'site_demo_only', sessionTicket: session.sessionTicket,
+      apiBase: 'https://demo.invalid/demo-api' }, session.transport)
+    clients.push(client)
+    expect(load).not.toHaveBeenCalled()
+    await client.initialize()
+    expect(load).toHaveBeenCalledTimes(1)
+    const first = client.state.challenge
+    await client.refresh()
+    expect(load).toHaveBeenCalledTimes(2)
+    expect(client.state.challenge?.challenge_id).not.toBe(first?.challenge_id)
+    await client.verify(solve(bank[1]))
+    expect(client.state.status).toBe('success')
+  })
+
   it('completes every exported sample through the shared client without a network request', async () => {
     const network = vi.fn(() => { throw new Error('Unexpected live API request') })
     vi.stubGlobal('fetch', network)
-    expect(samples).toHaveLength(24)
-    expect(new Set(samples.map(sample => sample.challenge.challenge_type)).size).toBe(6)
+    expect(samples).toHaveLength(32)
+    expect(new Set(samples.map(sample => sample.challenge.challenge_type)).size).toBe(8)
     for (const sample of samples) {
       const { client } = create([sample])
       await client.initialize()
       expect(client.state.status).toBe('ready')
-      await client.verify(sample.solution ? { progress: 0 } : 'incorrect')
+      const wrong: Answer = !sample.solution ? 'incorrect' : 'targets' in sample.solution
+        ? { points: sample.solution.targets.map(() => ({ x: 0, y: 0 })) } : 'tile_ids' in sample.solution
+          ? { tile_ids: sample.challenge.challenge_type === 'semantic_grid' ? sample.challenge.payload.tiles.map(tile => tile.id) : [] } : { progress: 0 }
+      await client.verify(wrong)
       expect(client.state.status).toBe('ready')
       expect(client.state.attemptsRemaining).toBe(2)
       await client.verify(solve(sample))
@@ -61,7 +84,7 @@ describe('public static playground', () => {
     expect(client.state.errorCode).toBe('ATTEMPTS_EXCEEDED')
     await client.refresh()
     expect(client.state.status).toBe('ready')
-    expect(client.state.challenge?.payload.image).not.toBe(old.payload.image)
+    expect('image' in client.state.challenge!.payload && client.state.challenge!.payload.image).not.toBe('image' in old.payload && old.payload.image)
     const stale = await session.transport('https://demo.invalid/demo-api/v1/challenges/' + old.challenge_id + '/verify', {
       method: 'POST', body: JSON.stringify({ session_ticket: session.sessionTicket, answer: bank[0].answer }),
     })

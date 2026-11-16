@@ -9,23 +9,30 @@ const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-k
 const result = document.querySelector<HTMLElement>('#result')!
 const retry = document.querySelector<HTMLButtonElement>('#retry')!
 const container = document.querySelector<HTMLElement>('#widget')!
-let sampleRequest: Promise<DemoSample[]> | undefined
+const sampleRequests = new Map<string, Promise<DemoSample>>()
+const previousSamples = new Map<ChallengeType, number>()
 let handle: WidgetHandle | undefined
 let selected: ChallengeType = 'rotate'
 let operation = 0
 const source = new URL('./demo-api', location.href).href
 
-function loadSamples() {
-  sampleRequest ??= fetch(new URL('./challenges.json', location.href)).then(async response => {
+function loadSample(kind: ChallengeType) {
+  let index = Math.floor(Math.random() * 4)
+  if (index === previousSamples.get(kind)) index = (index + 1) % 4
+  previousSamples.set(kind, index)
+  const path = `./challenges/${kind}/${index}.json`
+  if (sampleRequests.has(path)) return sampleRequests.get(path)!
+  const request = fetch(new URL(path, location.href)).then(async response => {
     if (!response.ok) throw new Error('演示题暂时没有加载成功，请重试')
-    const data = await response.json() as DemoSample[]
-    if (!Array.isArray(data) || !data.length) throw new Error('演示题暂时不可用，请重试')
+    const data = await response.json() as DemoSample
+    if (data?.challenge?.challenge_type !== kind) throw new Error('演示题暂时不可用，请重试')
     return data
   }).catch(error => {
-    sampleRequest = undefined
+    sampleRequests.delete(path)
     throw error
   })
-  return sampleRequest
+  sampleRequests.set(path, request)
+  return request
 }
 
 async function start(kind: ChallengeType) {
@@ -38,9 +45,7 @@ async function start(kind: ChallengeType) {
   result.textContent = `正在准备${label}…`
   retry.disabled = true
   try {
-    const bank = await loadSamples()
-    if (current !== operation) return
-    const session = createDemoTransport(kind, bank)
+    const session = createDemoTransport(kind, () => loadSample(kind))
     const runtime = createRuntime(source, '', session.transport)
     handle = runtime.render(container, {
       siteKey: 'site_demo_only', sessionTicket: session.sessionTicket, apiBase: source,
@@ -56,7 +61,8 @@ async function start(kind: ChallengeType) {
         if (current === operation && !handle?.getResponse()) result.textContent = `已收起${label}，点击卡片可继续体验。`
       },
       onError(code) {
-        if (current === operation && code === 'IMAGE_ERROR') result.textContent = '图片加载失败，请重新体验。'
+        if (current === operation) result.textContent = code === 'IMAGE_ERROR'
+          ? '图片加载失败，请重新体验。' : '验证暂不可用，请换一题或重新体验。'
       },
     })
     result.textContent = `正在体验${label}`

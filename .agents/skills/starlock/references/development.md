@@ -66,4 +66,4 @@ npm run build
 
 `npm run dev:demo` 启动独立的静态体验页，默认端口 5182。`npm run build:demo` 输出 `dist/static-demo/`，完整 `npm run build` 也包含该构建。导出命令为 `node scripts/export-demo.mjs ../StarDreamTech.github.io/projects/starlock/demo`，会替换目标的生成资产目录；详细操作在 `examples/static-demo/README.md`。
 
-2026-11-16 静态 demo 轮完成 42 项前端测试、类型检查和全构建，六种题型在桌面浏览器完成。手机视口与数字题错误恢复通过，原生触屏尚未检查。后端服务代码本轮未改动，未重复后端测试。
+2026-11-16 文字点选与语义九宫格轮完成 61 项后端、49 项前端测试、类型检查及完整构建。Vue 官网与 React 手机模拟视口均完成两种新题的实际服务端复核；静态 demo 完成两种新题，九宫格 390×844 视口的弹窗为 340×564，无横向溢出。真实触屏与 Safari/Firefox 尚未检查。单题懒加载及压缩图像尺寸依据 `docs/selection-assets.md`。

@@ -21,6 +21,8 @@ const kinds: { type: ChallengeType; name: string; description: string; hint: str
   { type: 'rotate', name: '圆环旋转', description: '旋转内圈，找回画面原本的模样。', hint: '拖动旋转内圈，留意模糊交界两侧的图案。', icon: 'M20 12a8 8 0 1 1-3-6m3-3v5h-5M8 12a4 4 0 1 0 4-4' },
   { type: 'bezier_slider', name: '曲线拼图', description: '沿着曲线，找到位置与角度的交点。', hint: '拖动图形，让位置和角度同时贴合。', icon: 'M4 17C7 3 17 3 20 17M4 17l-1-5m1 5 5-1M17 7l3 2-1-4' },
   { type: 'slider', name: '旋转滑块', description: '直线、变速，还有一点旋转的乐趣。', hint: '留意旋转，只有一个缺口能够贴合。', icon: 'M4 12h16m-4-4 4 4-4 4M8 5l3 2-3 2M8 19l-3-2 3-2' },
+  { type: 'text_click', name: '文字点选', description: '按题目顺序，在画面中找出指定文字。', hint: '按顺序点选，可撤销和清空标记。', icon: 'M5 4h14M12 4v13M8 17h8M17 14l3 3-3 3' },
+  { type: 'semantic_grid', name: '语义九宫格', description: '读懂问题，选出所有符合含义的图片。', hint: '选择所有符合题意的图片，确认后由服务端校验。', icon: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18' },
   { type: 'digits', name: '数字验证', description: '熟悉的数字，也是一种轻巧的选择。', hint: '输入图片中的数字，确认即可完成。', icon: '' },
   { type: 'text', name: '字符验证', description: '从字符里，找回清晰的答案。', hint: '输入图片中的字符，字母不区分大小写。', icon: '' },
   { type: 'arithmetic', name: '算术验证', description: '用一道小算式，开启一次交互。', hint: '算出图片中的结果，输入后确认。', icon: '' },
@@ -129,15 +131,15 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
-        <img class="hero-artwork" src="/brand/starlock-hero-v2.png" alt="星锁品牌场景：紫色玻璃锁体、四角星锁孔与流动光轨" width="1774" height="887" fetchpriority="high" decoding="async" />
+        <img class="hero-artwork" src="/brand/starlock-hero-v2.webp" alt="星锁品牌场景：紫色玻璃锁体、四角星锁孔与流动光轨" width="1600" height="800" fetchpriority="high" decoding="async" />
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> THE HUMAN SIDE OF THE INTERNET</p>
           <h1 id="hero-title">让信任，<br /><em>自然发生。</em></h1>
           <p class="hero-description">辨认真正的交互，留住流畅的体验。<br />星锁，让每一次验证都有温度。</p>
           <div class="hero-actions"><a class="primary-link" href="#experience" @click.prevent="choose('rotate')">即刻体验 <span>↗</span></a><a class="secondary-link" href="#integration">开发者接入 <span>→</span></a></div>
-          <div class="hero-meta"><span>六种验证交互</span><span class="meta-line"></span><span>一个托管 SDK</span></div>
+          <div class="hero-meta"><span>八种验证交互</span><span class="meta-line"></span><span>一个托管 SDK</span></div>
         </div>
-        <div class="hero-bottom"><a href="#experience" class="scroll-link">探索真实的交互 <span>↓</span></a><span class="hero-signature">TRUST, IN MOTION.</span><button class="hero-preview" type="button" @click="choose('rotate')"><img src="/rotation/starlock-aurora.png" width="48" height="48" alt="" /><span><small>TAKE A MOMENT / 01</small><strong>转动之间，找回完整。</strong></span><i aria-hidden="true">↗</i></button></div>
+        <div class="hero-bottom"><a href="#experience" class="scroll-link">探索真实的交互 <span>↓</span></a><span class="hero-signature">TRUST, IN MOTION.</span><button class="hero-preview" type="button" @click="choose('rotate')"><img src="/rotation/starlock-aurora.webp" width="48" height="48" alt="" /><span><small>TAKE A MOMENT / 01</small><strong>转动之间，找回完整。</strong></span><i aria-hidden="true">↗</i></button></div>
       </section>
 
       <div class="capability-strip" aria-label="星锁接入方式"><span>为真实而设计<span class="strip-dot">✦</span></span><span>Hosted SDK</span><span>Vue 3</span><span>React</span><span>FastAPI</span><span class="strip-note">前端轻接入 · 后端独立复核</span></div>
@@ -148,7 +150,7 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
           <div class="experience-copy"><p class="eyebrow">一点直觉，一点乐趣。</p><h2>验证，<em>也可以有趣。</em></h2>
             <p>转动、滑动，或解一道小题。<br />选一种方式，在独立弹窗里开始。</p>
             <div class="type-options" aria-label="验证方式">
-              <button v-for="item in kinds.slice(0, 3)" :key="item.type" :class="{ active: selected === item.type }" :aria-label="item.name" :aria-pressed="selected === item.type" @click="choose(item.type)">
+              <button v-for="item in kinds.filter(item => item.icon)" :key="item.type" :class="{ active: selected === item.type }" :aria-label="item.name" :aria-pressed="selected === item.type" @click="choose(item.type)">
                 <span class="type-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path :d="item.icon" /></svg></span>
                 <span class="type-copy"><strong>{{ item.name }}<small v-if="item.type === 'rotate'" class="recommended">推荐体验</small></strong><span>{{ item.description }}</span></span><span class="type-arrow" aria-hidden="true">↗</span>
               </button>
@@ -158,13 +160,13 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
               <div><button :aria-pressed="rotationSource === 'preset'" @click="chooseRotation('preset')">图片集预设 <small>系统与自定义图库</small></button><button :aria-pressed="rotationSource === 'procedural'" @click="chooseRotation('procedural')">随机几何 <small>每题生成图案</small></button></div>
               <a v-if="localDemo" href="http://127.0.0.1:8018/admin" target="_blank" rel="noopener">管理图片集 ↗</a>
             </div>
-            <div class="basic-options"><span>也可以简单一点</span><div aria-label="基础验证方式"><button v-for="item in kinds.slice(3)" :key="item.type" :aria-pressed="selected === item.type" @click="choose(item.type)">{{ item.name }}<span aria-hidden="true">↗</span></button></div></div>
+            <div class="basic-options"><span>也可以简单一点</span><div aria-label="基础验证方式"><button v-for="item in kinds.filter(item => !item.icon)" :key="item.type" :aria-pressed="selected === item.type" @click="choose(item.type)">{{ item.name }}<span aria-hidden="true">↗</span></button></div></div>
           </div>
           <div class="experience-stage">
             <div class="stage-label"><div><span class="live-label"><i></i> A MOMENT OF TRUST</span><h3>{{ selectedKind.name }}</h3></div><button type="button" :disabled="phase === 'loading'" aria-label="重新体验当前题型" @click="start()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.5 7a7 7 0 0 1 11.7-1L20 9M4 15l2.8 3A7 7 0 0 0 18.5 17" /></svg>换一组</button></div>
             <div class="stage-art" aria-hidden="true"><div class="stage-orbit"></div><img src="/brand/starlock.svg" width="112" height="112" alt="" /><span>HUMAN, BY NATURE.</span></div>
             <div class="widget-space" :aria-busy="phase === 'loading' || phase === 'checking'">
-              <StarLock v-if="session" ref="widget" :key="session.session_ticket" :site-key="session.site_key" :session-ticket="session.session_ticket" sdk-url="/sdk/v1/api.js?v=0.7.0-compact.1" :auto-open="showPopup" @success="session.onSuccess" @expire="session.onExpire" />
+              <StarLock v-if="session" ref="widget" :key="session.session_ticket" :site-key="session.site_key" :session-ticket="session.session_ticket" sdk-url="/sdk/v1/api.js?v=0.8.0-selections.1" :auto-open="showPopup" @success="session.onSuccess" @expire="session.onExpire" />
               <div v-else-if="phase === 'loading'" class="preview-skeleton" role="status" aria-label="正在准备验证"><div class="skeleton-heading"><span></span><i></i></div><div class="skeleton-scene"><span>正在准备一份新挑战</span></div><div class="skeleton-track"></div><p>马上就好…</p></div>
               <div v-else-if="phase === 'success'" class="passed-card" role="status"><span class="success-badge">✓ 验证完成</span><h3>刚刚好，是你。</h3><p>这次交互已通过完整验证。</p><button type="button" @click="start()">再试一次 <span>↗</span></button></div>
               <div v-else class="preview-error" role="alert"><h3>{{ phase === 'expired' ? '这份挑战已过期' : '暂时没能加载' }}</h3><p>{{ phase === 'expired' ? '换一份新挑战，继续体验。' : message }}</p><button type="button" @click="start()">重新加载 <span>↗</span></button></div>
@@ -219,7 +221,7 @@ onBeforeUnmount(() => { disposed = true; operation++; controller.abort() })
         <div class="art-grid"><figure class="lockup-art"><div class="logo-composition"><img src="/brand/starlock.svg" alt="星锁专用紫色锁形 Logo" width="104" height="104" /><span>StarLock<small>星锁 · HUMAN VERIFICATION</small></span></div><figcaption><span>01 / THE ORIGINAL MARK</span><a href="/brand/starlock.svg" download>获取项目 Logo ↗</a></figcaption></figure>
           <figure class="signature-art"><div class="signature-symbol" aria-hidden="true"><svg viewBox="0 0 120 120"><path d="M60 12C67 43 77 53 108 60C77 67 67 77 60 108C53 77 43 67 12 60C43 53 53 43 60 12Z"/></svg></div><figcaption><span>02 / A SPACE FOR TRUST</span><span>为真实，留一束光。</span></figcaption></figure></div>
         <div class="rotation-gallery" aria-label="星梦旋转验证码预设插画">
-          <figure v-for="art in [{ id: 'garden', name: '兰庭微光' }, { id: 'workshop', name: '星轨工坊' }, { id: 'aurora', name: '极光之钥' }]" :key="art.id"><img :src="`/rotation/starlock-${art.id}.png`" :alt="art.name + '：以星锁紫色锁体和四角星为主题的插画'" loading="lazy" width="1254" height="1254" /><figcaption><span>{{ art.name }}</span><a :href="`/rotation/starlock-${art.id}.png`" download>下载原图 ↗</a></figcaption></figure>
+          <figure v-for="art in [{ id: 'garden', name: '兰庭微光' }, { id: 'workshop', name: '星轨工坊' }, { id: 'aurora', name: '极光之钥' }]" :key="art.id"><img :src="`/rotation/starlock-${art.id}.webp`" :alt="art.name + '：以星锁紫色锁体和四角星为主题的插画'" loading="lazy" width="768" height="768" /><figcaption><span>{{ art.name }}</span><a :href="`/rotation/starlock-${art.id}.webp`" download>下载图片 ↗</a></figcaption></figure>
         </div>
       </section>
     </main>

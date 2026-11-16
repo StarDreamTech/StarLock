@@ -8,6 +8,7 @@
 | `server/cli.py`、`server/verification/models.py` | 站点初始化、创建和禁用；SQLite 站点数据、密钥派生记录 |
 | `server/verification/service.py` | 会话、出题、答案校验、限流及一次性凭证复核 |
 | `server/verification/generators.py` | 字符、数字、算术题与题型分派 |
+| `server/verification/selections.py` | 文字点选、语义九宫格生成及私有答案校验 |
 | `server/verification/sliders.py`、`server/verification/rotations.py` | 直线/曲线拼图、旋转题的生成与几何校验 |
 | `server/verification/cors.py` | 按启用站点的精确 Origin 授权浏览器挑战接口 |
 | `packages/core/src/` | 无框架依赖的 TypeScript 客户端和生命周期 |
@@ -33,9 +34,9 @@ Redis 保存会话及短期挑战状态，`service.py` 使用 WATCH/MULTI/EXEC �
 
 ## 题型与运动
 
-源码已有 `text`、`digits`、`arithmetic`、`slider`、`bezier_slider`、`rotate`。滑块的空间路径与 CSS 语义的三次贝塞尔速度缓动分别计算，并同步旋转；校验位置和角度，不能仅验证客户端声明“已贴合”。旋转题支持预设素材与程序生成，来源由后端会话约束。系统图库为 23 张、5 套，原有素材在 `assets/rotation/`、新增 20 张在 `server/assets/image-sets/`。图集配置与规范化自定义图片保存在 SQLite；部署须同时保留两处系统素材和数据库。详见 `docs/image-sets.md`。
+源码已有 `text`、`digits`、`arithmetic`、`slider`、`bezier_slider`、`rotate`、`text_click`、`semantic_grid`。滑块的空间路径与 CSS 语义的三次贝塞尔速度缓动分别计算，并同步旋转；校验位置和角度，不能仅验证客户端声明“已贴合”。旋转题支持预设素材与程序生成，来源由后端会话约束。系统图库为 23 张、5 套，原有素材在 `assets/rotation/`、新增 20 张在 `server/assets/image-sets/`。图集配置与规范化自定义图片保存在 SQLite；部署须同时保留两处系统素材和数据库。详见 `docs/image-sets.md`。
 
-点选、九宫格、无感与行为评分仍属后续范围；当前挑战响应不代表已经实现无感放行或风险分级。
+文字点选使用 300×180 中文图和三个有序点击，归一化坐标按 27 原图像素容差比较。语义九宫格使用三个类别、十二张审核图片，每题九格、二至四个正确项，随机格子标识按集合校验。素材与标签清单在 `server/assets/semantic/manifest.json`，字体及授权在 `server/assets/fonts/`。语义标签后台、多轮换图、无感与行为评分仍属后续范围。
 
 ## 图片集管理
 
@@ -45,6 +46,6 @@ Redis 保存会话及短期挑战状态，`service.py` 使用 WATCH/MULTI/EXEC �
 
 ## 静态交互演示
 
-Pages demo 位于 `examples/static-demo/`。`scripts/generate-demo-challenges.py` 复用后端生成器导出 24 道公开题与演示解，`transport.ts` 在浏览器内提供出题、换题和判定。样题与演示答案公开，凭证带 `demo_only` 前缀。正式接入使用原有服务端信任链。
+Pages demo 位于 `examples/static-demo/`。`scripts/generate-demo-challenges.py` 复用后端生成器导出 32 道公开题与演示解，`transport.ts` 在浏览器内提供出题、换题和判定。按单题 `challenges/<题型>/<0–3>.json` 加载，换题时再获取，页面内缓存；聚合 JSON 保留给旧缓存入口与测试。样题与演示答案公开，凭证带 `demo_only` 前缀。正式接入使用原有服务端信任链。
 
 `StarLockClient` 可选第二构造参数接收请求实现，`createRuntime` 的第三参数将其传入内部 Widget。正式 `api.js` 入口继续使用默认请求。demo 不改变 `StarLock.render`、Vue 或 React 的公开配置。
