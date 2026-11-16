@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+import re
 from contextlib import asynccontextmanager
 from typing import Annotated, Literal
 
@@ -17,6 +18,8 @@ from .errors import VerificationError, require
 from .cors import ChallengeCors
 from .models import SiteStore
 from .service import VerificationService
+from .rotations import RotationSource
+from .image_sets import MAX_UPLOAD_BYTES
 
 
 def error_response(code, message, status, **details):
@@ -42,14 +45,20 @@ class ApiBoundary:
                 if scope["path"] == "/sdk/v1/api.js" and message["status"] in (200, 206, 304):
                     headers[b"cache-control"] = b"public, max-age=300"
                     headers[b"cross-origin-resource-policy"] = b"cross-origin"
+                if scope["path"].startswith("/admin"):
+                    headers[b"x-robots-tag"] = b"noindex, nofollow"
+                    headers[b"cross-origin-resource-policy"] = b"same-origin"
                 message = {**message, "headers": list(headers.items())}
             await send(message)
 
         if scope["method"] == "POST":
             headers = dict(scope["headers"])
             content_type = headers.get(b"content-type", b"").split(b";", 1)[0].strip().lower()
-            if content_type != b"application/json":
-                return await error_response("INVALID_REQUEST", "请求必须使用 JSON 格式", 415)(scope, receive, secured_send)
+            upload = re.fullmatch(r"/admin/api/sets/[a-zA-Z0-9_-]{1,80}/images", scope["path"])
+            limit = MAX_UPLOAD_BYTES if upload else self.max_body_bytes
+            allowed = (b"image/png", b"image/jpeg", b"image/webp") if upload else (b"application/json",)
+            if content_type not in allowed:
+                return await error_response("INVALID_REQUEST", "请求内容类型不受支持", 415)(scope, receive, secured_send)
             try:
                 length = int(headers.get(b"content-length", b"0"))
                 if length < 0:
@@ -57,14 +66,14 @@ class ApiBoundary:
             except ValueError:
                 return await error_response("INVALID_REQUEST", "请求格式不正确", 400)(scope, receive, secured_send)
             body = bytearray()
-            if length > self.max_body_bytes:
+            if length > limit:
                 return await error_response("INVALID_REQUEST", "请求内容过大", 413)(scope, receive, secured_send)
             while True:
                 message = await receive()
                 if message["type"] == "http.disconnect":
                     return
                 body.extend(message.get("body", b""))
-                if len(body) > self.max_body_bytes:
+                if len(body) > limit:
                     return await error_response("INVALID_REQUEST", "请求内容过大", 413)(scope, receive, secured_send)
                 if not message.get("more_body", False):
                     break
@@ -86,6 +95,7 @@ class Input(BaseModel):
 
 
 ChallengeKind = Literal["text", "digits", "arithmetic", "slider", "bezier_slider", "rotate"]
+ImageSetId = Annotated[str, Field(pattern=r"^[a-zA-Z0-9_-]{1,80}$")]
 
 
 class SessionInput(Input):
@@ -94,6 +104,8 @@ class SessionInput(Input):
     context_id: str = Field(min_length=12, max_length=128)
     origin: str = Field(min_length=1, max_length=250)
     challenge_type: ChallengeKind = "text"
+    rotation_source: RotationSource | None = None
+    image_set_id: ImageSetId | None = None
 
 
 class BrowserInput(Input):
@@ -145,7 +157,8 @@ router = APIRouter()
 def create_session(data: SessionInput, request: Request, service: Service):
     site = authenticate_site(request, service, data.site_key)
     service.rate_limit("session_site", site.key, 120)
-    return service.create_session(site, data.action, data.context_id, data.origin, data.challenge_type)
+    return service.create_session(site, data.action, data.context_id, data.origin, data.challenge_type,
+                                  data.rotation_source, data.image_set_id)
 
 
 @router.post("/v1/challenges")
@@ -181,6 +194,7 @@ def create_app(settings=None, sites=None, redis_client=None):
     @asynccontextmanager
     async def lifespan(app):
         await run_in_threadpool(sites.initialize)
+        await run_in_threadpool(app.state.service.image_sets.initialize)
         yield
 
     app = FastAPI(title="StarLock API", version="0.7.0", lifespan=lifespan,
@@ -210,6 +224,8 @@ def create_app(settings=None, sites=None, redis_client=None):
         return error_response("INVALID_REQUEST", "接口不存在或请求方式不正确", error.status_code)
 
     app.include_router(router)
+    from .admin import router as admin_router
+    app.include_router(admin_router)
 
     @app.api_route("/sdk/v1/api.js", methods=["GET", "HEAD"], include_in_schema=False)
     def browser_sdk():

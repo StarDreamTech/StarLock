@@ -8,7 +8,7 @@ from io import BytesIO
 from pathlib import Path
 from random import Random
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 
 from fastapi.testclient import TestClient
 from PIL import Image
@@ -18,7 +18,7 @@ from verification.api import create_app
 from verification.errors import VerificationError
 from verification.generators import generate
 from verification.models import Site, SiteStore
-from verification.rotations import generate_rotation, matches_rotation
+from verification.rotations import PRESETS, generate_rotation, matches_rotation, preset_image
 from verification.sliders import (SLIDER_TYPES, SHAPES, PIECE, MIN_TRAVEL, MAX_TRAVEL, angle_distance,
                                   matches_slider, motion_state, path_point, separated, shape_mask, slider_layout)
 
@@ -26,6 +26,27 @@ ORIGIN = "http://127.0.0.1:5178"
 
 
 class SliderGeneratorTests(TestCase):
+    def test_preset_assets_load_and_both_sources_keep_the_same_ring_protocol(self):
+        for name in PRESETS:
+            image = preset_image(name)
+            self.assertEqual(image.size, (256, 256))
+            self.assertEqual(image.mode, "RGB")
+        preset_images, procedural_images = set(), set()
+        for seed in range(12):
+            for source, images in (("preset", preset_images), ("procedural", procedural_images)):
+                with patch("verification.rotations.SystemRandom", return_value=Random(seed)):
+                    payload, solution = generate_rotation(source)
+                images.add(payload["image"])
+                self.assertEqual(payload["image_width"], 256)
+                self.assertEqual(solution["angle_tolerance"], 5)
+                self.assertNotIn("source", payload)
+                self.assertNotIn("target_angle", payload)
+        self.assertEqual(len(preset_images), 12)
+        self.assertEqual(len(procedural_images), 12)
+        self.assertFalse(preset_images & procedural_images)
+        with self.assertRaises(ValueError):
+            generate_rotation("../../anything")
+
     def test_ring_images_are_private_random_and_can_be_aligned_with_easing(self):
         images = set()
         for seed in range(20):
@@ -200,6 +221,28 @@ class SliderFlowTests(TestCase):
 
     def verify(self, answer):
         return self.client.post(self.url, json={**self.browser, "answer": answer}, headers={"Origin": ORIGIN})
+
+    def test_rotation_source_is_validated_and_bound_to_the_backend_session(self):
+        body = {"site_key": self.site.key, "action": "register", "context_id": "context_source_123",
+                "origin": ORIGIN, "challenge_type": "rotate"}
+        auth = {"Authorization": "Bearer " + self.secret}
+        for source in (None, "preset", "procedural"):
+            result = self.client.post("/v1/sessions", json={**body, **({"rotation_source": source} if source else {})}, headers=auth)
+            self.assertEqual(result.status_code, 201, result.text)
+            browser = {"site_key": self.site.key, "session_ticket": result.json()["session_ticket"]}
+            headers = {"Origin": ORIGIN}
+            with patch("verification.service.generate", wraps=generate) as generator:
+                first = self.client.post("/v1/challenges", json=browser, headers=headers)
+                self.assertEqual(first.status_code, 200, first.text)
+                generator.assert_called_once_with("rotate", rotation_source=source or "preset", **({"image": ANY} if source != "procedural" else {}))
+                tampered = self.client.post("/v1/challenges", json={**browser, "rotation_source": "procedural"}, headers=headers)
+                self.assertEqual(tampered.status_code, 400)
+                generator.reset_mock()
+                refreshed = self.client.post("/v1/challenges", json={**browser, "replace_challenge_id": first.json()["challenge_id"]}, headers=headers)
+                self.assertEqual(refreshed.status_code, 200, refreshed.text)
+                generator.assert_called_once_with("rotate", rotation_source=source or "preset", **({"image": ANY} if source != "procedural" else {}))
+        for extra in ({"rotation_source": "external"}, {"challenge_type": "digits", "rotation_source": "preset"}):
+            self.assertEqual(self.client.post("/v1/sessions", json={**body, **extra}, headers=auth).status_code, 400)
 
     def test_ring_challenge_attempts_and_one_time_token_flow(self):
         from verification.sliders import eased_progress

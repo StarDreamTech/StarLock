@@ -1,0 +1,202 @@
+[
+  {
+    "id": "01-lunar-observatory",
+    "name": "月面观测站",
+    "set_id": "system-orbit",
+    "sha256": "9b8b7273b6c6e7e7cca85f39283da2c8fc442dacfe8ff4ae13365b5b44b0114a",
+    "scene_prompt": "A glass lock in a lunar observatory with opal prisms, a silver rail, indigo stone terraces and peach light.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2583019
+  },
+  {
+    "id": "02-orbital-dock",
+    "name": "星港环流",
+    "set_id": "system-orbit",
+    "sha256": "a73d6b723f4681ac540a6e1d77f7560c6ea7d5017f4e35400438734071c11b77",
+    "scene_prompt": "A brushed titanium and violet glass lock at an orbital docking station with translucent rails, chrome spheres and asymmetric solar sails.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2614101
+  },
+  {
+    "id": "03-meteor-garden",
+    "name": "陨星花园",
+    "set_id": "system-orbit",
+    "sha256": "50e404d68e76fae655e3006e7bf71e1d60e5094e542ea65ad7f56c3a66573c1b",
+    "scene_prompt": "A frosted rose-lilac lock above an amethyst meteor garden, cobalt facets, peach fibre optics and a silver pearl.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2475510
+  },
+  {
+    "id": "04-celestial-forge",
+    "name": "星铸熔光",
+    "set_id": "system-orbit",
+    "sha256": "ff4dea2be6923f0e0fea42c735f88565c95b491097618f5c0c977e66c5f592a9",
+    "scene_prompt": "An amber-amethyst lock in a basalt celestial forge with molten gold filaments, satin metal folds and a pearl.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2469507
+  },
+  {
+    "id": "05-aurora-glacier",
+    "name": "极光冰川",
+    "set_id": "system-orbit",
+    "sha256": "46792423867d70093260c398bd43236fa447b941c72eb630a50885ae96913893",
+    "scene_prompt": "A faceted lavender ice lock in an aurora glacier with ice fins, peach ribbon and turquoise reflections.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2891618
+  },
+  {
+    "id": "06-porcelain-workbench",
+    "name": "瓷光手作",
+    "set_id": "system-material",
+    "sha256": "a76305ee9109552f518a1679263934e55e03bb4051fef3ba1eae128ba4203ab4",
+    "scene_prompt": "A matte porcelain lock on an artisan workbench, ceramic fragments, peach silk, cobalt glaze and a silver tool loop.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2877083
+  },
+  {
+    "id": "07-stained-glass",
+    "name": "彩窗折光",
+    "set_id": "system-material",
+    "sha256": "b04686454baee3164f077e4ddf6ea3686ff040bcf7711eaf82f3062c89c57dfb",
+    "scene_prompt": "A violet glass lock in a stained-glass studio with coral, cobalt and lilac shards and a bent silver ribbon.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2490469
+  },
+  {
+    "id": "08-paper-silk",
+    "name": "纸与绸",
+    "set_id": "system-material",
+    "sha256": "bc4001781a98421e90d532167d4cbcbe1a6aa741066859077d7969193e619cbc",
+    "scene_prompt": "A layered paper lock with violet fans, a terracotta strip, cotton cord and plum fabric, top-down tactile composition.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 3349722
+  },
+  {
+    "id": "09-liquid-chrome",
+    "name": "流银蓝调",
+    "set_id": "system-material",
+    "sha256": "329b4c1480e8b5f81febfd32146da6405ba7852a1503b43ae29c7bc4dcb2d635",
+    "scene_prompt": "A liquid chrome and violet glass lock, sapphire enamel stream, peach ribbon and mercury-like droplets.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2257199
+  },
+  {
+    "id": "10-ceramic-museum",
+    "name": "金缎陈列",
+    "set_id": "system-material",
+    "sha256": "b410874ee56283edc179d146ffd90489b181a5188820db2ab205206815867024",
+    "scene_prompt": "A satin ceramic lock on a museum plinth, gold ribbon, terrazzo, an opal sphere and ivory cloth.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2458454
+  },
+  {
+    "id": "11-botanical-glow",
+    "name": "兰叶微光",
+    "set_id": "system-nature",
+    "sha256": "0dc603a55b43936b6bd5d65db5febcd74ddfe19b80ab366dce0e22740a730085",
+    "scene_prompt": "A weathered lilac ceramic lock in a botanical conservatory with orchids, glowing leaves, a peach petal, dew spheres and moss.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2860033
+  },
+  {
+    "id": "12-coral-glass",
+    "name": "珊瑚幻海",
+    "set_id": "system-nature",
+    "sha256": "3ea99109814a24e6b2a08a18a0c9fe5f86acfa26d5a1d7f09603b73df1c8490a",
+    "scene_prompt": "A sea-glass lilac lock in shallow water with sculptural coral glass branches and blue-peach anemone-like ribbons, no animals.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2545479
+  },
+  {
+    "id": "13-lavender-dunes",
+    "name": "风过紫沙",
+    "set_id": "system-nature",
+    "sha256": "14e22cbdf81af3b313edcb70e6ad5a11fea96f107e8380eb69b15c1e7706f31a",
+    "scene_prompt": "A satin amethyst lock among diagonal lavender dunes, wind ridges, apricot cloth, a cobalt crystal and silver pearl.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2591881
+  },
+  {
+    "id": "14-crystal-forest",
+    "name": "晶林暮色",
+    "set_id": "system-nature",
+    "sha256": "0d0bcdeaed514f9373d3d7d537bc1a53c30a3a18d66e1d5796297137c9f064bb",
+    "scene_prompt": "A lavender resin lock in a crystal forest with silver branches, peach sunset, glass leaves and a blue pearl.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2748979
+  },
+  {
+    "id": "15-river-stones",
+    "name": "溪石静语",
+    "set_id": "system-nature",
+    "sha256": "b85fe04473cb674d271911b76cf00a06702689006ab5317de0828870db47f221",
+    "scene_prompt": "A lilac ceramic lock among river stones, a cyan stream, peach reed, violet leaves and silver pebble.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2446499
+  },
+  {
+    "id": "16-moebius-gallery",
+    "name": "回环艺廊",
+    "set_id": "system-space",
+    "sha256": "ec7a57818d33b89a67d6a78b04270f045543dde787506864e07d72627eb46f24",
+    "scene_prompt": "A smoky lilac lock in an asymmetric gallery of Moebius ribbons, plaster planes, a peach prism and chrome beads.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2320421
+  },
+  {
+    "id": "17-floating-stairs",
+    "name": "浮阶梦境",
+    "set_id": "system-space",
+    "sha256": "cac5f099a4b0b37e7a28185291f6567b4447e0f394d37cfca55f7e10ce874be3",
+    "scene_prompt": "A luminous violet resin lock at an oblique angle over floating asymmetric stair fragments, pale peach arches, an icy-blue glass rail crossing the frame and an opal bead.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1713070
+  },
+  {
+    "id": "18-origami-city",
+    "name": "折纸星城",
+    "set_id": "system-space",
+    "sha256": "bbe547b75767c1371dd9986a801a9cbe871f1f9247eb95debb07f4bceb0602ee",
+    "scene_prompt": "A violet ceramic lock among an asymmetric folded-paper city, ivory pleated towers, an icy-blue glass footbridge and coral-peach ribbon.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2301741
+  },
+  {
+    "id": "19-fluid-laboratory",
+    "name": "流光实验室",
+    "set_id": "system-space",
+    "sha256": "2885342cc6265314d882ebdcae3c36a7246b72f7ff57fef245ca172ea668de53",
+    "scene_prompt": "A violet glass and brushed lavender metal lock in an optical fluid laboratory with asymmetric clear sapphire-liquid tubes, peach translucent ribbon, pearlescent drops and angular ivory supports.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2514209
+  },
+  {
+    "id": "20-dream-library",
+    "name": "梦页藏光",
+    "set_id": "system-space",
+    "sha256": "05082e14c97649fe66e2d432e8c23accf1fa3a1177dadadbc3db8a48af662be1",
+    "scene_prompt": "A lavender ceramic lock in a surreal library of sweeping blank ivory folded pages, dark plum paper arches, a sapphire ribbon behind the shackle and a peach opal light. No printed pages or book titles.",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 2509557
+  }
+]

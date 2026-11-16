@@ -23,14 +23,14 @@ class GeneratedChallenge:
     solution: dict | None = None
 
 
-def generate(kind):
+def generate(kind, rotation_source="preset", image=None):
     if kind not in TYPES:
         raise ValueError("Unsupported challenge type")
     if kind in SLIDER_TYPES:
-        payload, solution = generate_slider(kind)
+        payload, solution = generate_slider(kind, image=image)
         return GeneratedChallenge("", payload, solution)
     if kind == "rotate":
-        payload, solution = generate_rotation()
+        payload, solution = generate_rotation(rotation_source, image=image)
         return GeneratedChallenge("", payload, solution)
     question = "请输入图片中的字符"
     if kind == "arithmetic":

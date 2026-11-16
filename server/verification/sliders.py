@@ -139,13 +139,14 @@ def png(image):
     return "data:image/png;base64," + base64.b64encode(buffer.getvalue()).decode()
 
 
-def generate_slider(kind):
+def generate_slider(kind, image=None):
     rng = SystemRandom()
     layout = slider_layout(kind, rng)
     path, target = layout["path"], layout["target"]
     target_x, target_y = target["x"], target["y"]
 
-    # A fresh procedural scene avoids shipping a labelled stock-image answer set.
+    source_image = image
+    # Keep the procedural scene when no collection was selected by the backend.
     image = Image.new("RGB", (WIDTH, HEIGHT))
     phase = rng.uniform(0, math.tau)
     image.putdata([(int(20 + 18 * x / WIDTH), int(35 + 30 * y / HEIGHT),
@@ -163,6 +164,10 @@ def generate_slider(kind):
         draw.polygon([(0, y + 25), (0, y), (70, y - rng.randint(12, 30)),
                       (160, y + 8), (250, y - rng.randint(15, 35)), (WIDTH, y),
                       (WIDTH, HEIGHT), (0, HEIGHT)], fill=(40 + index * 10, 58 + index * 12, 102 + index * 16))
+    if source_image is not None:
+        from PIL import ImageOps
+        image = ImageOps.fit(source_image.convert("RGB"), (WIDTH, HEIGHT))
+        draw = ImageDraw.Draw(image)
     if kind == "bezier_slider":
         guide = [tuple(round(v + PIECE / 2) for v in path_point(path, n / 100)) for n in range(101)]
         draw.line(guide, fill="#7591c4", width=1)

@@ -1,0 +1,109 @@
+{
+  "tool": "built-in imagegen",
+  "reference": "assets/brand/starlock.png",
+  "transparent_background": false,
+  "note": "可复用的归档规格：共同约束加各场景描述；实际逐张调用有同义措辞和光影细节调整。",
+  "common_prompt": "Use case: stylized-concept. One square full-bleed StarLock CAPTCHA source illustration. Reference identity: rounded lilac/purple padlock, arched shackle and FOUR-point-star negative-space keyhole. Premium tactile 3D/editorial art direction, asymmetric composition, crafted material detail and soft cinematic lighting. Keep the primary lock within central 85% for a circular crop. Distinct irregular visual contours should cross the middle 40–75% diameter region and remain recognizable at 256px. No text, letters, numbers, UI, watermark, border, circular frame, seams, actual puzzle cutouts, five-point stars, radial symmetry or new mascot.",
+  "scenes": [
+    {
+      "id": "01-lunar-observatory",
+      "name": "月面观测站",
+      "prompt": "A glass lock in a lunar observatory with opal prisms, a silver rail, indigo stone terraces and peach light."
+    },
+    {
+      "id": "02-orbital-dock",
+      "name": "星港环流",
+      "prompt": "A brushed titanium and violet glass lock at an orbital docking station with translucent rails, chrome spheres and asymmetric solar sails."
+    },
+    {
+      "id": "03-meteor-garden",
+      "name": "陨星花园",
+      "prompt": "A frosted rose-lilac lock above an amethyst meteor garden, cobalt facets, peach fibre optics and a silver pearl."
+    },
+    {
+      "id": "04-celestial-forge",
+      "name": "星铸熔光",
+      "prompt": "An amber-amethyst lock in a basalt celestial forge with molten gold filaments, satin metal folds and a pearl."
+    },
+    {
+      "id": "05-aurora-glacier",
+      "name": "极光冰川",
+      "prompt": "A faceted lavender ice lock in an aurora glacier with ice fins, peach ribbon and turquoise reflections."
+    },
+    {
+      "id": "06-porcelain-workbench",
+      "name": "瓷光手作",
+      "prompt": "A matte porcelain lock on an artisan workbench, ceramic fragments, peach silk, cobalt glaze and a silver tool loop."
+    },
+    {
+      "id": "07-stained-glass",
+      "name": "彩窗折光",
+      "prompt": "A violet glass lock in a stained-glass studio with coral, cobalt and lilac shards and a bent silver ribbon."
+    },
+    {
+      "id": "08-paper-silk",
+      "name": "纸与绸",
+      "prompt": "A layered paper lock with violet fans, a terracotta strip, cotton cord and plum fabric, top-down tactile composition."
+    },
+    {
+      "id": "09-liquid-chrome",
+      "name": "流银蓝调",
+      "prompt": "A liquid chrome and violet glass lock, sapphire enamel stream, peach ribbon and mercury-like droplets."
+    },
+    {
+      "id": "10-ceramic-museum",
+      "name": "金缎陈列",
+      "prompt": "A satin ceramic lock on a museum plinth, gold ribbon, terrazzo, an opal sphere and ivory cloth."
+    },
+    {
+      "id": "11-botanical-glow",
+      "name": "兰叶微光",
+      "prompt": "A weathered lilac ceramic lock in a botanical conservatory with orchids, glowing leaves, a peach petal, dew spheres and moss."
+    },
+    {
+      "id": "12-coral-glass",
+      "name": "珊瑚幻海",
+      "prompt": "A sea-glass lilac lock in shallow water with sculptural coral glass branches and blue-peach anemone-like ribbons, no animals."
+    },
+    {
+      "id": "13-lavender-dunes",
+      "name": "风过紫沙",
+      "prompt": "A satin amethyst lock among diagonal lavender dunes, wind ridges, apricot cloth, a cobalt crystal and silver pearl."
+    },
+    {
+      "id": "14-crystal-forest",
+      "name": "晶林暮色",
+      "prompt": "A lavender resin lock in a crystal forest with silver branches, peach sunset, glass leaves and a blue pearl."
+    },
+    {
+      "id": "15-river-stones",
+      "name": "溪石静语",
+      "prompt": "A lilac ceramic lock among river stones, a cyan stream, peach reed, violet leaves and silver pebble."
+    },
+    {
+      "id": "16-moebius-gallery",
+      "name": "回环艺廊",
+      "prompt": "A smoky lilac lock in an asymmetric gallery of Moebius ribbons, plaster planes, a peach prism and chrome beads."
+    },
+    {
+      "id": "17-floating-stairs",
+      "name": "浮阶梦境",
+      "prompt": "A luminous violet resin lock at an oblique angle over floating asymmetric stair fragments, pale peach arches, an icy-blue glass rail crossing the frame and an opal bead."
+    },
+    {
+      "id": "18-origami-city",
+      "name": "折纸星城",
+      "prompt": "A violet ceramic lock among an asymmetric folded-paper city, ivory pleated towers, an icy-blue glass footbridge and coral-peach ribbon."
+    },
+    {
+      "id": "19-fluid-laboratory",
+      "name": "流光实验室",
+      "prompt": "A violet glass and brushed lavender metal lock in an optical fluid laboratory with asymmetric clear sapphire-liquid tubes, peach translucent ribbon, pearlescent drops and angular ivory supports."
+    },
+    {
+      "id": "20-dream-library",
+      "name": "梦页藏光",
+      "prompt": "A lavender ceramic lock in a surreal library of sweeping blank ivory folded pages, dark plum paper arches, a sapphire ribbon behind the shackle and a peach opal light. No printed pages or book titles."
+    }
+  ]
+}

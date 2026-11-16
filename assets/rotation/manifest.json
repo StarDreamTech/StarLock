@@ -1,0 +1,27 @@
+{
+  "generator": "image_gen.imagegen",
+  "reference": "../brand/starlock.png",
+  "assets": [
+    {
+      "file": "starlock-aurora.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2037063,
+      "sha256": "70e3a8541e255c5bb6173d726b224e00a9f0cd88dd7ecd52ec21c6a1377bcc9c"
+    },
+    {
+      "file": "starlock-garden.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2267780,
+      "sha256": "7851a78d05a025c1679b5606f9ccfa44f52c9ac14ea0f9ba91570115022274d8"
+    },
+    {
+      "file": "starlock-workshop.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2672532,
+      "sha256": "8d24c5648c7deba66f7e16130d1c4c5da84dcd8e05953db8377ad33f79d5d71a"
+    }
+  ]
+}

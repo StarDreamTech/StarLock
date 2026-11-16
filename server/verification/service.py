@@ -15,6 +15,7 @@ from .errors import VerificationError, require
 from .generators import TYPES, generate
 from .sliders import SLIDER_TYPES, matches_slider
 from .rotations import matches_rotation
+from .image_sets import ImageSetStore
 
 
 @lru_cache(maxsize=4)
@@ -57,6 +58,7 @@ class VerificationService:
         self.sites = sites
         self.redis = client if client is not None else connection(settings.redis_url)
         self.prefix = settings.redis_prefix
+        self.image_sets = ImageSetStore(sites)
 
     def key(self, session_id):
         return self.prefix + "session:" + session_id
@@ -71,11 +73,17 @@ class VerificationService:
         if count > limit:
             raise VerificationError("RATE_LIMITED", "操作太频繁，请稍后重试", 429, retry_after=seconds)
 
-    def create_session(self, site, action, context_id, origin, kind):
+    def create_session(self, site, action, context_id, origin, kind, rotation_source=None, image_set_id=None):
         origin = normalize_origin(origin)
         require(origin in site.origins, "ORIGIN_DENIED", "来源未获得站点授权", 403)
         require(action in site.actions, "ACTION_DENIED", "业务动作未获得站点授权", 403)
         require(kind in TYPES and kind in site.challenge_types, "TYPE_DENIED", "题型未获得站点授权", 403)
+        require(rotation_source is None or (kind == "rotate" and rotation_source in ("preset", "procedural")),
+                "INVALID_REQUEST", "旋转图片来源仅适用于圆环旋转题")
+        require(image_set_id is None or kind in SLIDER_TYPES or (kind == "rotate" and rotation_source != "procedural"),
+                "INVALID_REQUEST", "图片集仅适用于预设旋转题和拼图滑块")
+        selected_set = (self.image_sets.resolve(image_set_id)
+                        if image_set_id or (kind == "rotate" and rotation_source != "procedural") else None)
         sid, ticket_secret = secrets.token_urlsafe(24), secrets.token_urlsafe(32)
         ticket = sid + "." + ticket_secret
         now = time.time()
@@ -83,6 +91,10 @@ class VerificationService:
                  "origin": origin, "kind": kind, "ticket_hash": digest(ticket),
                  "status": "created", "expires_at": now + self.settings.session_ttl,
                  "challenge": None, "issued_count": 0}
+        if kind == "rotate":
+            state["rotation_source"] = rotation_source or "preset"
+        if selected_set:
+            state["image_set_id"] = selected_set
         require(self.redis.set(self.key(sid), json.dumps(state), ex=self.settings.session_ttl, nx=True),
                 "BUSY", "请重试创建验证会话", 409)
         return {"site_key": site.key, "session_ticket": ticket, "expires_in": self.settings.session_ttl}
@@ -145,7 +157,10 @@ class VerificationService:
             if old:
                 require(replace == old["id"], "CHALLENGE_REPLACED", "请刷新当前题目", 409)
             require(state["issued_count"] < 10, "ATTEMPTS_EXCEEDED", "会话出题次数已用完，请重新开始", 429)
-            generated = generate(state["kind"])
+            options = {"rotation_source": state.get("rotation_source", "procedural")} if state["kind"] == "rotate" else {}
+            if state.get("image_set_id"):
+                options["image"] = self.image_sets.sample(state["image_set_id"])
+            generated = generate(state["kind"], **options)
             challenge_id = "ch_" + secrets.token_urlsafe(24)
             state["challenge"] = {
                 "id": challenge_id,

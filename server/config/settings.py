@@ -21,6 +21,7 @@ class Settings:
     max_attempts: int = 3
     max_body_bytes: int = 32768
     demo_enabled: bool = False
+    admin_token: str = ""
     demo_origins: tuple[str, ...] = ("http://127.0.0.1:5178", "http://localhost:5178",
                                      "http://127.0.0.1:5179", "http://localhost:5179")
 
@@ -33,6 +34,8 @@ class Settings:
             raise RuntimeError("The public development key cannot be used outside debug mode")
         if self.demo_enabled and not self.debug:
             raise RuntimeError("Demo routes require debug mode")
+        if self.admin_token and len(self.admin_token) < 32:
+            raise RuntimeError("STARLOCK_ADMIN_TOKEN must contain at least 32 characters")
 
     @classmethod
     def from_env(cls):
@@ -47,4 +50,5 @@ class Settings:
             allowed_hosts=tuple(part.strip() for part in os.environ.get(
                 "STARLOCK_ALLOWED_HOSTS", ",".join(cls.allowed_hosts)).split(",") if part.strip()),
             demo_enabled=debug and os.environ.get("STARLOCK_DEMO") == "1",
+            admin_token=os.environ.get("STARLOCK_ADMIN_TOKEN", ""),
         )

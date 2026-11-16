@@ -4,7 +4,7 @@ import secrets
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import Field
-from .api import ChallengeKind, Input, Service, remote_address
+from .api import ChallengeKind, ImageSetId, Input, RotationSource, Service, remote_address
 from .errors import require
 from .models import Site
 from .service import digest
@@ -14,6 +14,8 @@ router = APIRouter()
 
 class DemoSessionInput(Input):
     challenge_type: ChallengeKind
+    rotation_source: RotationSource | None = None
+    image_set_id: ImageSetId | None = None
 
 
 class DemoTokenInput(Input):
@@ -39,7 +41,8 @@ def demo_session(data: DemoSessionInput, request: Request, service: Service):
                                            origins=list(settings.demo_origins), actions=["demo_submit"]))
     require(site.active, "SITE_INVALID", "演示站点已关闭", 403)
     context_id, browser_reference = secrets.token_urlsafe(24), secrets.token_urlsafe(32)
-    result = service.create_session(site, "demo_submit", context_id, origin, data.challenge_type)
+    result = service.create_session(site, "demo_submit", context_id, origin, data.challenge_type,
+                                    data.rotation_source, data.image_set_id)
     service.redis.set(service.prefix + "demo-context:" + digest(browser_reference), context_id, ex=settings.session_ttl)
     response = JSONResponse(result, status_code=201)
     response.set_cookie("starlock_demo_context", browser_reference, max_age=settings.session_ttl,

@@ -1,16 +1,32 @@
 """An offset inner disk; the private correction angle is baked into its pixels."""
 import math
+from functools import lru_cache
+from pathlib import Path
 from random import SystemRandom
+from typing import Literal
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
 
 from .sliders import angle_distance, eased_progress, png, random_easing
 
 SIZE, INNER_RADIUS, SEAM_BLUR = 256, 82, 2.5
+RotationSource = Literal["preset", "procedural"]
+PRESETS = ("starlock-garden.png", "starlock-workshop.png", "starlock-aurora.png")
+PRESET_DIRECTORY = Path(__file__).resolve().parents[2] / "assets" / "rotation"
 
 
-def generate_rotation():
-    rng = SystemRandom()
+@lru_cache(maxsize=len(PRESETS))
+def preset_image(name):
+    with Image.open(PRESET_DIRECTORY / name) as image:
+        return image.convert("RGB").resize((SIZE, SIZE), Image.Resampling.LANCZOS)
+
+
+def rotation_image(source, rng):
+    if source == "preset":
+        # Vary the whole scene too: the lock's upright direction is not the correction angle.
+        return preset_image(rng.choice(PRESETS)).rotate(rng.randrange(360), resample=Image.Resampling.BICUBIC)
+    if source != "procedural":
+        raise ValueError("Unsupported rotation image source")
     # The asymmetric bands cross the seam; concentric or repeated motifs would be ambiguous.
     image = Image.new("RGB", (SIZE, SIZE))
     colors = rng.choice((((208, 224, 247), (236, 212, 225)), ((186, 218, 239), (223, 217, 249)),
@@ -27,6 +43,13 @@ def generate_rotation():
     draw.ellipse((125, 137, 193, 205), fill="#f2e8e4")
     draw.ellipse((141, 153, 177, 189), fill=palette[0])
     image = image.filter(ImageFilter.GaussianBlur(.6))
+    return image
+
+
+def generate_rotation(source: RotationSource = "preset", image=None):
+    rng = SystemRandom()
+    image = (ImageOps.fit(image.convert("RGB"), (SIZE, SIZE)).rotate(rng.randrange(360), resample=Image.Resampling.BICUBIC)
+             if image is not None else rotation_image(source, rng))
     center = SIZE // 2
     band = Image.new("L", image.size)
     pen = ImageDraw.Draw(band)
