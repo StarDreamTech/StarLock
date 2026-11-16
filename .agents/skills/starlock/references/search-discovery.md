@@ -12,7 +12,7 @@
 
 ## Pages 交互试玩
 
-新增 `https://stardreamtech.github.io/projects/starlock/demo/`，页面复用验证码界面，公开样题在浏览器内判定。组织首页、星锁介绍页提供试玩入口，站点地图与资料索引包含演示页，元信息和统计检查共覆盖七个页面。静态 demo 从星锁仓库构建并导出到 Pages 仓库，构建步骤见 `examples/static-demo/README.md`。2026-11-16，Pages 提交 `52e98ee` 构建完成，公开链接返回 HTTP 200。实际线上浏览器完成圆环旋转和数字题，手机视口从项目介绍的试玩入口进入正常，弹窗 340 × 416，无横向溢出。
+新增 `https://stardreamtech.github.io/projects/starlock/demo/`，页面复用验证码界面，公开样题在浏览器内判定。组织首页、星锁介绍页提供试玩入口，站点地图与资料索引包含演示页，元信息和统计检查共覆盖七个页面。静态 demo 从星锁仓库构建并导出到 Pages 仓库，构建步骤见 `examples/static-demo/README.md`。2026-11-16，Pages 提交 `ece49c9` 构建完成，公开链接返回 HTTP 200。实际线上浏览器完成圆环旋转和数字题，手机视口从项目介绍的试玩入口进入正常，弹窗 340 × 416，无横向溢出。
 
 ## 星锁独立官网构建
 
