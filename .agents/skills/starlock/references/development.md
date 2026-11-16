@@ -76,3 +76,5 @@ npm run build
 `server/verification/tests/test_server_sdks.py` 使用临时站点数据库、HTTP 端口与隔离 Redis 命名空间，分别由 Python 与 Go 创建八种会话，再完成实际挑战与一次性复核，检查错误上下文和重复消费。没有 Go 环境时，仅跨语言那项跳过，不能据此声称已完成 Go 实测。
 
 Python 独立单元入口为 `PYTHONPATH=sdks/python/src python -m unittest discover -s sdks/python/tests -v`。Go 在 `sdks/go` 内运行 `go test -race -count=1 -timeout=30s ./...` 和 `go vet ./...`。Python 构建采用 `uv build --wheel sdks/python`，构建目录与 egg-info 已在该 SDK 的 `.gitignore` 中排除。最低语法目标 Python 3.10 / Go 1.22，本轮实际执行环境为 Python 3.12.13、Go 1.25.0，其他版本待独立测试。
+
+源码安装复验已通过：Python 经 GitHub 子目录构建安装后通过七项测试，Go 在独立模块通过 `go get .../sdks/go@main` 及包测试。当前环境的 `goproxy.cn` 曾下载停滞，使用单次 `GOPROXY=https://proxy.golang.org,direct` 完成复验，见 `sdks/go/README.md`。功能提交 `b5989c5`、接入文档 `aa18e01`、Pages SDK 入口 `b9c70a5` 已分别推送，后者构建及公开页面核验通过。

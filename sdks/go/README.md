@@ -10,6 +10,12 @@ go get github.com/StarDreamTech/starlock/sdks/go@main
 
 当前通过源码分支提供模块，版本标签尚未发布。部署时可固定已验证的提交版本。
 
+如果配置的模块镜像下载停滞，可在单次命令中指定官方代理。该方式已完成安装与包测试复验。
+
+```bash
+GOPROXY=https://proxy.golang.org,direct go get github.com/StarDreamTech/starlock/sdks/go@main
+```
+
 ## 使用
 
 以下函数从私有环境读取配置，接入方从业务后端的会话中传入上下文。
