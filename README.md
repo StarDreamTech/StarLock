@@ -1,3 +1,5 @@
+<p align="center"><b>中文</b> · <a href="README.en.md">English</a></p>
+
 <p align="center">
   <a href=".github/assets/starlock.svg">
     <img src=".github/assets/starlock.svg" width="128" height="128" alt="星锁 StarLock Logo" />
